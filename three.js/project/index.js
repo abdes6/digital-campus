@@ -24,7 +24,7 @@ document.body.insertBefore(renderer.domElement, document.body.firstChild);
 const controls = initControls(camera, renderer.domElement);
 
 // ── 场景对象 ────────────────────────────────────────────
-const buildings = createBuildings(scene);
+const buildings = await createBuildings(scene);
 const roads = createRoads(scene);
 const vegetation = createVegetation(scene);
 

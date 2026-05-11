@@ -1,26 +1,56 @@
 import * as THREE from 'three';
+import { loadModel } from './loader.js';
 
-// 建筑信息数据
+const LIB_INFO = {
+    建筑面积: '12000 m²',
+    楼层: '5层',
+    建成年份: '2005年',
+    简介: '馆藏图书80余万册，提供自习、借阅、数字资源等服务。'
+};
+
+async function createLibrary(scene) {
+    try {
+        const gltf = await loadModel('./assets/models/library.glb');
+        const model = gltf.scene;
+
+        // 计算模型包围盒，自动缩放到合适大小
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const targetSize = 80;
+        const scale = targetSize / maxDim;
+        model.scale.setScalar(scale);
+
+        // 贴地放置到场景中央
+        box.setFromObject(model);
+        const minY = box.min.y;
+        model.position.set(0, -minY, 0);
+
+        model.traverse(child => {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                child.userData = { type: 'building', name: '图书馆', info: LIB_INFO };
+            }
+        });
+
+        model.userData = { type: 'building', name: '图书馆', info: LIB_INFO };
+        model.name = 'lib';
+        scene.add(model);
+        return model;
+    } catch (e) {
+        console.warn('library.glb 加载失败，使用几何体替代', e);
+        return null;
+    }
+}
+
+// 建筑信息数据（图书馆在中央，其余建筑分布四周，间距充足）
 const BUILDING_DATA = [
-    {
-        id: 'lib',
-        name: '图书馆',
-        position: [0, 0, -20],
-        size: [20, 18, 16],
-        color: 0xd4a96a,
-        roofColor: 0x8b4513,
-        info: {
-            建筑面积: '12000 m²',
-            楼层: '5层',
-            建成年份: '2005年',
-            简介: '馆藏图书80余万册，提供自习、借阅、数字资源等服务。'
-        }
-    },
     {
         id: 'teach_a',
         name: '教学楼A',
-        position: [-35, 0, 10],
-        size: [18, 22, 14],
+        position: [-80, 0, -60],
+        size: [22, 24, 16],
         color: 0xc8d8e8,
         roofColor: 0x5577aa,
         info: {
@@ -33,8 +63,8 @@ const BUILDING_DATA = [
     {
         id: 'teach_b',
         name: '教学楼B',
-        position: [35, 0, 10],
-        size: [18, 22, 14],
+        position: [80, 0, -60],
+        size: [22, 24, 16],
         color: 0xc8d8e8,
         roofColor: 0x5577aa,
         info: {
@@ -47,8 +77,8 @@ const BUILDING_DATA = [
     {
         id: 'admin',
         name: '行政楼',
-        position: [0, 0, 30],
-        size: [24, 14, 12],
+        position: [0, 0, 90],
+        size: [28, 16, 14],
         color: 0xe8dcc8,
         roofColor: 0x996633,
         info: {
@@ -61,8 +91,8 @@ const BUILDING_DATA = [
     {
         id: 'gym',
         name: '体育馆',
-        position: [-50, 0, -30],
-        size: [30, 12, 25],
+        position: [-100, 0, 20],
+        size: [35, 14, 28],
         color: 0xd0e8d0,
         roofColor: 0x336633,
         info: {
@@ -75,8 +105,8 @@ const BUILDING_DATA = [
     {
         id: 'dorm',
         name: '学生宿舍',
-        position: [55, 0, -25],
-        size: [16, 28, 12],
+        position: [100, 0, 20],
+        size: [20, 32, 14],
         color: 0xf0e0c8,
         roofColor: 0xaa6633,
         info: {
@@ -139,13 +169,21 @@ function addWindows(group, w, h, d, baseColor) {
     }
 }
 
-export function createBuildings(scene) {
+export async function createBuildings(scene) {
     const buildings = [];
+
+    // 其余建筑用几何体（跳过 lib，由 GLB 替代）
     for (const data of BUILDING_DATA) {
+        if (data.id === 'lib') continue;
         const b = createBuilding(data);
         scene.add(b);
         buildings.push(b);
     }
+
+    // 异步加载图书馆 GLB
+    const lib = await createLibrary(scene);
+    if (lib) buildings.push(lib);
+
     return buildings;
 }
 

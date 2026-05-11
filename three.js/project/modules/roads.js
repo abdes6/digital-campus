@@ -37,13 +37,16 @@ export function createRoads(scene) {
     const roads = [];
 
     // 主干道（南北向）
-    roads.push(createRoad(0, 0, 8, 160));
+    roads.push(createRoad(0, 0, 10, 280));
     // 主干道（东西向）
-    roads.push(createRoad(0, 0, 8, 160, Math.PI / 2));
-    // 支路
-    roads.push(createRoad(-25, -10, 5, 60));
-    roads.push(createRoad(25, -10, 5, 60));
-    roads.push(createRoad(0, 20, 5, 80, Math.PI / 2));
+    roads.push(createRoad(0, 0, 10, 280, Math.PI / 2));
+    // 教学楼区支路
+    roads.push(createRoad(-80, -20, 6, 80));
+    roads.push(createRoad(80, -20, 6, 80));
+    // 行政楼前广场路
+    roads.push(createRoad(0, 70, 6, 50, Math.PI / 2));
+    // 体育馆/宿舍横向连接路
+    roads.push(createRoad(0, 20, 6, 240, Math.PI / 2));
 
     for (const r of roads) {
         scene.add(r);
