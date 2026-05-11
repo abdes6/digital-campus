@@ -8,10 +8,15 @@ body {
     overflow: hidden;
     background: #000;
     font-family: 'Microsoft YaHei', sans-serif;
+    isolation: isolate;
 }
 
 canvas {
     display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
 }
 
 /* HUD 顶部工具栏 */

@@ -1,6 +1,4 @@
-import TWEEN from '@tweenjs/tween.js';
-
-export function startPatrolAnimation(camera, controls) {
+export function startPatrolAnimation(camera, controls, TWEEN) {
     const waypoints = [
         { pos: { x: 80, y: 50, z: 80 },  target: { x: 0, y: 0, z: 0 } },
         { pos: { x: -80, y: 40, z: 60 }, target: { x: -20, y: 5, z: 0 } },
@@ -9,7 +7,6 @@ export function startPatrolAnimation(camera, controls) {
         { pos: { x: 80, y: 50, z: 80 },  target: { x: 0, y: 0, z: 0 } }
     ];
 
-    let chain = null;
     const tweens = waypoints.slice(1).map((wp, i) => {
         const from = waypoints[i];
         const t = new TWEEN.Tween({
@@ -29,7 +26,6 @@ export function startPatrolAnimation(camera, controls) {
         return t;
     });
 
-    // 链式连接
     for (let i = 0; i < tweens.length - 1; i++) {
         tweens[i].chain(tweens[i + 1]);
     }
@@ -38,7 +34,7 @@ export function startPatrolAnimation(camera, controls) {
     return tweens[0];
 }
 
-export function pulseObject(mesh) {
+export function pulseObject(mesh, TWEEN) {
     const origin = { s: 1 };
     new TWEEN.Tween(origin)
         .to({ s: 1.15 }, 400)

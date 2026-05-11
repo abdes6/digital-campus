@@ -18,7 +18,8 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
+// 插入到 body 最前面，确保 canvas 在 DOM 层级低于 HUD 元素
+document.body.insertBefore(renderer.domElement, document.body.firstChild);
 
 const controls = initControls(camera, renderer.domElement);
 
@@ -53,12 +54,19 @@ document.querySelectorAll('.layer-item input').forEach(cb => {
 
 // ── 视角切换 ────────────────────────────────────────────
 document.querySelectorAll('.view-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('[view] clicked:', btn.dataset.view);
         document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         switchView(btn.dataset.view, camera, controls);
+        console.log('[view] camera after switchView call:', camera.position);
     });
 });
+
+// 调试：暴露到 window
+window.__camera = camera;
+window.__controls = controls;
 
 // ── 巡游动画 ────────────────────────────────────────────
 let patrolActive = false;
@@ -66,7 +74,7 @@ document.getElementById('btn-patrol').addEventListener('click', () => {
     if (!patrolActive) {
         patrolActive = true;
         document.getElementById('btn-patrol').classList.add('active');
-        startPatrolAnimation(camera, controls);
+        startPatrolAnimation(camera, controls, TWEEN);
         setTimeout(() => {
             patrolActive = false;
             document.getElementById('btn-patrol').classList.remove('active');
@@ -89,7 +97,7 @@ renderer.domElement.addEventListener('click', (e) => {
         const obj = hits[0].object;
         if (obj.userData && obj.userData.name) {
             showInfo(obj.userData);
-            pulseObject(obj.parent || obj);
+            pulseObject(obj.parent || obj, TWEEN);
         } else if (obj.userData && obj.userData.type) {
             showInfo(obj.userData);
         } else {

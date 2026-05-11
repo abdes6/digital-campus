@@ -1,7 +1,5 @@
 import * as THREE from 'three';
-import TWEEN from '@tweenjs/tween.js';
 
-// 预设视角
 const VIEWS = {
     perspective: {
         position: new THREE.Vector3(80, 60, 80),
@@ -39,16 +37,39 @@ export function switchView(viewName, camera, controls) {
 
     const fromPos = camera.position.clone();
     const fromTarget = controls.target.clone();
+    const toPos = view.position.clone();
+    const toTarget = view.target.clone();
 
-    new TWEEN.Tween({ t: 0 })
-        .to({ t: 1 }, 1200)
-        .easing(TWEEN.Easing.Cubic.InOut)
-        .onUpdate(({ t }) => {
-            camera.position.lerpVectors(fromPos, view.position, t);
-            controls.target.lerpVectors(fromTarget, view.target, t);
+    const duration = 1200;
+    const start = performance.now();
+
+    // 鸟瞰需要临时放开极角限制
+    const prevMaxPolar = controls.maxPolarAngle;
+    if (viewName === 'birdseye') controls.maxPolarAngle = Math.PI;
+
+    function easeInOut(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function tick(now) {
+        const elapsed = now - start;
+        const t = easeInOut(Math.min(elapsed / duration, 1));
+
+        camera.position.lerpVectors(fromPos, toPos, t);
+        controls.target.lerpVectors(fromTarget, toTarget, t);
+        controls.update();
+
+        if (elapsed < duration) {
+            requestAnimationFrame(tick);
+        } else {
+            camera.position.copy(toPos);
+            controls.target.copy(toTarget);
             controls.update();
-        })
-        .start();
+            if (viewName !== 'birdseye') controls.maxPolarAngle = prevMaxPolar;
+        }
+    }
+
+    requestAnimationFrame(tick);
 }
 
 export { VIEWS };
