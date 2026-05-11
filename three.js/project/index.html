@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>浙江树人学院 · 数字孪生校园系统</title>
+    <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+
+    <!-- 加载遮罩 -->
+    <div id="loading">
+        <div>数字孪生校园系统加载中...</div>
+        <div id="loading-bar-wrap"><div id="loading-bar"></div></div>
+    </div>
+
+    <!-- 顶部 HUD -->
+    <div id="hud">
+        <button class="hud-btn view-btn active" data-view="perspective">透视视角</button>
+        <button class="hud-btn view-btn" data-view="birdseye">鸟瞰视角</button>
+        <button class="hud-btn view-btn" data-view="front">正面视角</button>
+        <button class="hud-btn" id="btn-patrol">场景巡游</button>
+    </div>
+
+    <!-- 图层控制 -->
+    <div id="layer-panel">
+        <h3>图层控制</h3>
+        <label class="layer-item">
+            <input type="checkbox" data-layer="buildings" checked /> 建筑
+        </label>
+        <label class="layer-item">
+            <input type="checkbox" data-layer="roads" checked /> 道路
+        </label>
+        <label class="layer-item">
+            <input type="checkbox" data-layer="vegetation" checked /> 植被
+        </label>
+    </div>
+
+    <!-- 信息面板 -->
+    <div id="info-panel">
+        <span class="close-btn" id="panel-close">✕</span>
+        <div class="panel-title" id="panel-title"></div>
+        <div id="panel-body"></div>
+    </div>
+
+    <!-- 底部提示 -->
+    <div id="tooltip">鼠标左键旋转 · 滚轮缩放 · 右键平移 · 点击对象查看信息</div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "/three.js-r179/build/three.module.js",
+            "three/addons/": "/three.js-r179/examples/jsm/",
+            "@tweenjs/tween.js": "/tween.js/dist/tween.esm.js"
+        }
+    }
+    </script>
+    <script type="module" src="index.js"></script>
+
+</body>
+</html>

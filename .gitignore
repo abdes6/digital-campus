@@ -1,0 +1,10 @@
+# Three.js 库文件（体积过大，不提交）
+three.js/three.js-r179/
+three.js/tween.js/
+three.js/node_modules/
+
+# Claude Code 内部文件
+.claude/
+
+# 临时文件
+_doc_text.txt
