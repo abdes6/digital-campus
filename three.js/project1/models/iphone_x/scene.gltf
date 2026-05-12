@@ -1,0 +1,516 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 84,
+      "max": [
+        0.6722586750984192,
+        0.9999989867210388,
+        1.815877079963684
+      ],
+      "min": [
+        -1.1440324783325195,
+        -1.000001072883606,
+        -1.8304957151412964
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 1008,
+      "componentType": 5126,
+      "count": 84,
+      "max": [
+        0.997859001159668,
+        0.0,
+        1.0
+      ],
+      "min": [
+        -0.9978589415550232,
+        0.0,
+        -0.9978589415550232
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 84,
+      "max": [
+        0.6844044327735901,
+        0.8684834241867065
+      ],
+      "min": [
+        0.32055211067199707,
+        0.1380157768726349
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 252,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 2016,
+      "componentType": 5126,
+      "count": 1181,
+      "max": [
+        0.6722586750984192,
+        1.2268720865249634,
+        1.815877079963684
+      ],
+      "min": [
+        -1.1440324783325195,
+        0.863784670829773,
+        -1.8304957151412964
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 16188,
+      "componentType": 5126,
+      "count": 1181,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -0.9919302463531494,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 672,
+      "componentType": 5126,
+      "count": 1181,
+      "max": [
+        0.7233790755271912,
+        0.9773761630058289
+      ],
+      "min": [
+        0.27664852142333984,
+        0.07016675174236298
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 1008,
+      "componentType": 5125,
+      "count": 1926,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 30360,
+      "componentType": 5126,
+      "count": 252,
+      "max": [
+        0.6722586750984192,
+        -0.8056948781013489,
+        1.815877079963684
+      ],
+      "min": [
+        -1.1440324783325195,
+        -1.000001072883606,
+        -1.8304957151412964
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 33384,
+      "componentType": 5126,
+      "count": 252,
+      "max": [
+        0.9978587627410889,
+        0.0,
+        0.9978591203689575
+      ],
+      "min": [
+        -0.9978589415550232,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 10120,
+      "componentType": 5126,
+      "count": 252,
+      "max": [
+        0.6815669536590576,
+        0.8661867380142212
+      ],
+      "min": [
+        0.3225432336330414,
+        0.1361033320426941
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 8712,
+      "componentType": 5125,
+      "count": 756,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 36408,
+      "componentType": 5126,
+      "count": 42,
+      "max": [
+        0.5635440945625305,
+        -0.8056948781013489,
+        1.7071623802185059
+      ],
+      "min": [
+        -1.0353178977966309,
+        -0.805695116519928,
+        -1.7217808961868286
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 36912,
+      "componentType": 5126,
+      "count": 42,
+      "max": [
+        2.886846459659864e-07,
+        -1.0,
+        5.939415359534905e-07
+      ],
+      "min": [
+        -3.355511921654397e-07,
+        -1.0,
+        -1.0303508588549448e-06
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 12136,
+      "componentType": 5126,
+      "count": 42,
+      "max": [
+        0.6603138446807861,
+        0.8454691767692566
+      ],
+      "min": [
+        0.3427574038505554,
+        0.15713533759117126
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 11736,
+      "componentType": 5125,
+      "count": 120,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "KI NG (https://sketchfab.com/dadybandit)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/iphone-x-3f903a7c1f9c4633a3ebf1cf2c71592a",
+      "title": "Iphone X"
+    },
+    "generator": "Sketchfab-12.66.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 12216,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 12472,
+      "byteOffset": 12216,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 37416,
+      "byteOffset": 24688,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 62104,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/Material.002_baseColor.jpeg"
+    },
+    {
+      "uri": "textures/Material.001_baseColor.jpeg"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "Material.003",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.0999146,
+          0.0964789,
+          0.0964789,
+          1.0
+        ],
+        "roughnessFactor": 0.0
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Material.002",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.49056603773584906,
+        "roughnessFactor": 0.0
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Material.001",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 1
+        },
+        "roughnessFactor": 0.0
+      }
+    },
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        0.31446540880503143,
+        0.31446540880503143,
+        0.31446540880503143
+      ],
+      "emissiveTexture": {
+        "index": 1
+      },
+      "name": "Material.004",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 1
+        },
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "iphone x_Material.003_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "iphone x_Material.002_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 5,
+            "POSITION": 4,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "iphone x_Material.001_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 9,
+            "POSITION": 8,
+            "TEXCOORD_0": 10
+          },
+          "indices": 11,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "iphone x_Material.004_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 13,
+            "POSITION": 12,
+            "TEXCOORD_0": 14
+          },
+          "indices": 15,
+          "material": 3,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "ce607646b8dc40bea162c647ad04b771.fbx"
+    },
+    {
+      "children": [
+        3
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "matrix": [
+        99.99904670417945,
+        -0.4366443121556667,
+        -6.296826393636934e-08,
+        0.0,
+        1.3227471458053694e-08,
+        4.09972207788891e-06,
+        -7.422561168669522,
+        0.0,
+        0.4366443121556349,
+        99.9990467041642,
+        5.523350578018338e-05,
+        0.0,
+        21.7713623046875,
+        52.703880310058594,
+        7.312554771488067e-06,
+        1.0
+      ],
+      "name": "iphone x"
+    },
+    {
+      "mesh": 0,
+      "name": "iphone x_Material.003_0"
+    },
+    {
+      "mesh": 1,
+      "name": "iphone x_Material.002_0"
+    },
+    {
+      "mesh": 2,
+      "name": "iphone x_Material.001_0"
+    },
+    {
+      "mesh": 3,
+      "name": "iphone x_Material.004_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    }
+  ]
+}

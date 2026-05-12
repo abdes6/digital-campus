@@ -1,0 +1,11 @@
+Model Information:
+* title:	Portable handheld fan
+* source:	https://sketchfab.com/3d-models/portable-handheld-fan-058df126a3674bceb821b4a78cfde5b4
+* author:	Red Kaiser (https://sketchfab.com/redkaiser555)
+
+Model License:
+* license type:	CC-BY-ND-4.0 (http://creativecommons.org/licenses/by-nd/4.0/)
+* requirements:	Author must be credited. Modified versions can not be distributed. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Portable handheld fan" (https://sketchfab.com/3d-models/portable-handheld-fan-058df126a3674bceb821b4a78cfde5b4) by Red Kaiser (https://sketchfab.com/redkaiser555) licensed under CC-BY-ND-4.0 (http://creativecommons.org/licenses/by-nd/4.0/)

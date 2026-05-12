@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星形/齿轮形状生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #4cc9f0;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #a5b4fc;
+            font-size: 1.2rem;
+        }
+        
+        .content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h2 {
+            color: #4cc9f0;
+            border-bottom: 2px solid #4cc9f0;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #4cc9f0;
+            font-family: 'Consolas', monospace;
+            overflow-x: auto;
+        }
+        
+        .comment {
+            color: #6a9955;
+        }
+        
+        .keyword {
+            color: #569cd6;
+        }
+        
+        .function {
+            color: #dcdcaa;
+        }
+        
+        .number {
+            color: #b5cea8;
+        }
+        
+        .variable {
+            color: #9cdcfe;
+        }
+        
+        .controls {
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .control-group {
+            margin: 15px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #a5b4fc;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .value-display {
+            display: inline-block;
+            width: 40px;
+            text-align: center;
+            background: #4cc9f0;
+            color: #1a1a2e;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .canvas-container {
+            width: 100%;
+            height: 400px;
+            background: #000;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .explanation {
+            background: rgba(76, 201, 240, 0.1);
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            background: #4cc9f0;
+            color: #1a1a2e;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #a5b4fc;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>星形/齿轮形状生成器</h1>
+            <p class="subtitle">理解代码如何创建星形和齿轮形状</p>
+        </header>
+        
+        <div class="content">
+            <div class="card">
+                <h2>原始代码分析</h2>
+                <div class="code-block">
+                    <span class="keyword">for</span>(<span class="keyword">let</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> &lt; <span class="variable">points</span> * <span class="number">2</span>; <span class="variable">i</span>++){<br>
+                    &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">angle</span> = <span class="variable">i</span> * <span class="variable">Math</span>.<span class="variable">PI</span> / <span class="variable">points</span>;<br>
+                    &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">r</span> = <span class="variable">i</span> % <span class="number">2</span> === <span class="number">0</span> ? <span class="variable">radius</span> : <span class="variable">radius</span> / <span class="number">2</span>;<br>
+                    &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">x</span> = <span class="variable">r</span> * <span class="variable">Math</span>.<span class="function">cos</span>(<span class="variable">angle</span>);<br>
+                    &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">y</span> = <span class="variable">r</span> * <span class="variable">Math</span>.<span class="function">sin</span>(<span class="variable">angle</span>);<br>
+                    &nbsp;&nbsp;<span class="keyword">if</span>(<span class="variable">i</span> === <span class="number">0</span>){<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">shape</span>.<span class="function">moveTo</span>(<span class="variable">x</span>, <span class="variable">y</span>);<br>
+                    &nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;<span class="keyword">else</span> <span class="variable">shape</span>.<span class="function">lineTo</span>(<span class="variable">x</span>, <span class="variable">y</span>);<br>
+                    }
+                </div>
+                
+                <div class="explanation">
+                    <h3>代码工作原理：</h3>
+                    
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <strong>循环控制：</strong> 循环 <code>points * 2</code> 次，为每个"点"创建两个顶点（一个在外圈，一个在内圈）
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <strong>角度计算：</strong> <code>angle = i * Math.PI / points</code> 将圆分成 <code>points</code> 份，但循环两次所以实际创建 <code>points * 2</code> 个点
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <strong>半径交替：</strong> 使用 <code>i % 2 === 0</code> 判断，偶数索引使用外半径，奇数索引使用内半径（外半径的一半）
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <strong>坐标计算：</strong> 使用极坐标公式 <code>x = r * cos(angle)</code>, <code>y = r * sin(angle)</code> 计算每个点的位置
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <strong>路径绘制：</strong> 第一个点使用 <code>moveTo()</code>，后续点使用 <code>lineTo()</code> 连接
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>实时演示</h2>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="points">点的数量 (points): <span id="pointsValue" class="value-display">5</span></label>
+                        <input type="range" id="points" min="3" max="20" value="5">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="radius">外半径 (radius): <span id="radiusValue" class="value-display">100</span></label>
+                        <input type="range" id="radius" min="50" max="150" value="100">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="innerRatio">内半径比例: <span id="innerRatioValue" class="value-display">0.5</span></label>
+                        <input type="range" id="innerRatio" min="0.1" max="0.9" step="0.1" value="0.5">
+                    </div>
+                    
+                    <div class="control-group">
+                        <button id="animateBtn">切换动画</button>
+                        <button id="resetBtn">重置</button>
+                    </div>
+                </div>
+                
+                <div class="canvas-container">
+                    <canvas id="shapeCanvas" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>代码变体与改进</h2>
+            
+            <div class="code-block">
+                <span class="comment">// 变体1: 完整的圆形（2π弧度）</span><br>
+                <span class="keyword">for</span>(<span class="keyword">let</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> &lt;= <span class="variable">points</span> * <span class="number">2</span>; <span class="variable">i</span>++){<br>
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">angle</span> = (<span class="variable">i</span> * <span class="variable">Math</span>.<span class="variable">PI</span> * <span class="number">2</span>) / (<span class="variable">points</span> * <span class="number">2</span>);<br>
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">r</span> = <span class="variable">i</span> % <span class="number">2</span> === <span class="number">0</span> ? <span class="variable">radius</span> : <span class="variable">radius</span> * <span class="variable">innerRatio</span>;<br>
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">x</span> = <span class="variable">r</span> * <span class="variable">Math</span>.<span class="function">cos</span>(<span class="variable">angle</span>);<br>
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">y</span> = <span class="variable">r</span> * <span class="variable">Math</span>.<span class="function">sin</span>(<span class="variable">angle</span>);<br>
+                &nbsp;&nbsp;<span class="keyword">if</span>(<span class="variable">i</span> === <span class="number">0</span>) <span class="variable">shape</span>.<span class="function">moveTo</span>(<span class="variable">x</span>, <span class="variable">y</span>);<br>
+                &nbsp;&nbsp;<span class="keyword">else</span> <span class="variable">shape</span>.<span class="function">lineTo</span>(<span class="variable">x</span>, <span class="variable">y</span>);<br>
+                }<br>
+                <span class="variable">shape</span>.<span class="function">closePath</span>(); <span class="comment">// 闭合路径</span>
+            </div>
+            
+            <div class="code-block">
+                <span class="comment">// 变体2: 使用数组存储点，更清晰</span><br>
+                <span class="keyword">const</span> <span class="variable">vertices</span> = [];<br>
+                <span class="keyword">for</span>(<span class="keyword">let</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> &lt; <span class="variable">points</span> * <span class="number">2</span>; <span class="variable">i</span>++){<br>
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">angle</span> = (<span class="variable">i</span> * <span class="variable">Math</span>.<span class="variable">PI</span> * <span class="number">2</span>) / (<span class="variable">points</span> * <span class="number">2</span>);<br>
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">r</span> = <span class="variable">i</span> % <span class="number">2</span> === <span class="number">0</span> ? <span class="variable">radius</span> : <span class="variable">radius</span> * <span class="variable">innerRatio</span>;<br>
+                &nbsp;&nbsp;<span class="variable">vertices</span>.<span class="function">push</span>({<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">x</span>: <span class="variable">r</span> * <span class="variable">Math</span>.<span class="function">cos</span>(<span class="variable">angle</span>),<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">y</span>: <span class="variable">r</span> * <span class="variable">Math</span>.<span class="function">sin</span>(<span class="variable">angle</span>)<br>
+                &nbsp;&nbsp;});<br>
+                }<br>
+                <span class="comment">// 然后绘制所有点</span><br>
+                <span class="variable">shape</span>.<span class="function">moveTo</span>(<span class="variable">vertices</span>[<span class="number">0</span>].<span class="variable">x</span>, <span class="variable">vertices</span>[<span class="number">0</span>].<span class="variable">y</span>);<br>
+                <span class="keyword">for</span>(<span class="keyword">let</span> <span class="variable">i</span> = <span class="number">1</span>; <span class="variable">i</span> &lt; <span class="variable">vertices</span>.<span class="variable">length</span>; <span class="variable">i</span>++){<br>
+                &nbsp;&nbsp;<span class="variable">shape</span>.<span class="function">lineTo</span>(<span class="variable">vertices</span>[<span class="variable">i</span>].<span class="variable">x</span>, <span class="variable">vertices</span>[<span class="variable">i</span>].<span class="variable">y</span>);<br>
+                }<br>
+                <span class="variable">shape</span>.<span class="function">closePath</span>();
+            </div>
+        </div>
+        
+        <footer>
+            <p>星形/齿轮形状生成器 | 理解极坐标和路径绘制</p>
+        </footer>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const canvas = document.getElementById('shapeCanvas');
+        const ctx = canvas.getContext('2d');
+        const pointsInput = document.getElementById('points');
+        const radiusInput = document.getElementById('radius');
+        const innerRatioInput = document.getElementById('innerRatio');
+        const pointsValue = document.getElementById('pointsValue');
+        const radiusValue = document.getElementById('radiusValue');
+        const innerRatioValue = document.getElementById('innerRatioValue');
+        const animateBtn = document.getElementById('animateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        // 初始参数
+        let points = parseInt(pointsInput.value);
+        let radius = parseInt(radiusInput.value);
+        let innerRatio = parseFloat(innerRatioInput.value);
+        let animationId = null;
+        let rotation = 0;
+        
+        // 更新显示的值
+        function updateDisplays() {
+            pointsValue.textContent = points;
+            radiusValue.textContent = radius;
+            innerRatioValue.textContent = innerRatio.toFixed(1);
+        }
+        
+        // 绘制形状
+        function drawShape() {
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 设置中心点
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // 开始绘制路径
+            ctx.beginPath();
+            
+            // 原始代码逻辑（稍作修改以支持完整圆形和动画）
+            for(let i = 0; i <= points * 2; i++){
+                const angle = (i * Math.PI * 2) / (points * 2) + rotation;
+                const r = i % 2 === 0 ? radius : radius * innerRatio;
+                const x = centerX + r * Math.cos(angle);
+                const y = centerY + r * Math.sin(angle);
+                
+                if(i === 0){
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            
+            ctx.closePath();
+            
+            // 设置样式并绘制
+            ctx.fillStyle = 'rgba(76, 201, 240, 0.5)';
+            ctx.strokeStyle = '#4cc9f0';
+            ctx.lineWidth = 2;
+            ctx.fill();
+            ctx.stroke();
+            
+            // 绘制顶点
+            for(let i = 0; i <= points * 2; i++){
+                const angle = (i * Math.PI * 2) / (points * 2) + rotation;
+                const r = i % 2 === 0 ? radius : radius * innerRatio;
+                const x = centerX + r * Math.cos(angle);
+                const y = centerY + r * Math.sin(angle);
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = i % 2 === 0 ? '#ff6b6b' : '#51cf66';
+                ctx.fill();
+            }
+        }
+        
+        // 动画函数
+        function animate() {
+            rotation += 0.01;
+            drawShape();
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        // 事件监听
+        pointsInput.addEventListener('input', function() {
+            points = parseInt(this.value);
+            updateDisplays();
+            drawShape();
+        });
+        
+        radiusInput.addEventListener('input', function() {
+            radius = parseInt(this.value);
+            updateDisplays();
+            drawShape();
+        });
+        
+        innerRatioInput.addEventListener('input', function() {
+            innerRatio = parseFloat(this.value);
+            updateDisplays();
+            drawShape();
+        });
+        
+        animateBtn.addEventListener('click', function() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+                this.textContent = '开始动画';
+            } else {
+                animate();
+                this.textContent = '停止动画';
+            }
+        });
+        
+        resetBtn.addEventListener('click', function() {
+            pointsInput.value = 5;
+            radiusInput.value = 100;
+            innerRatioInput.value = 0.5;
+            points = 5;
+            radius = 100;
+            innerRatio = 0.5;
+            rotation = 0;
+            updateDisplays();
+            drawShape();
+            
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+                animateBtn.textContent = '开始动画';
+            }
+        });
+        
+        // 初始绘制
+        updateDisplays();
+        drawShape();
+        
+        // 响应窗口大小变化
+        window.addEventListener('resize', function() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            drawShape();
+        });
+        
+        // 初始调整画布大小
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+    </script>
+</body>
+</html>

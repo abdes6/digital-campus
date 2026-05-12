@@ -1,0 +1,11 @@
+Model Information:
+* title:	Blower-fan
+* source:	https://sketchfab.com/3d-models/blower-fan-ad99d42ba53a4ca881357048d7a558bd
+* author:	okcomputer (https://sketchfab.com/okcomputer)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Blower-fan" (https://sketchfab.com/3d-models/blower-fan-ad99d42ba53a4ca881357048d7a558bd) by okcomputer (https://sketchfab.com/okcomputer) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

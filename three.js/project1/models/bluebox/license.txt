@@ -1,0 +1,11 @@
+Model Information:
+* title:	Blue plastic box
+* source:	https://sketchfab.com/3d-models/blue-plastic-box-fcb241daa50d4f7cab8a2dc3912830a6
+* author:	Suzukin_Keicar (https://sketchfab.com/Suzukin_Keicar)
+
+Model License:
+* license type:	CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)
+* requirements:	Author must be credited. Modified versions must have the same license. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Blue plastic box" (https://sketchfab.com/3d-models/blue-plastic-box-fcb241daa50d4f7cab8a2dc3912830a6) by Suzukin_Keicar (https://sketchfab.com/Suzukin_Keicar) licensed under CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)

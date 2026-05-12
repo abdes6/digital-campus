@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		
+	</head>
+	<body>
+		<div id="scene-container">
+		<!-- 引入 Bootstrap 5 CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+			<div class="position-absolute top-0 start-0 p-3">
+				<div class="card">
+					<div class="card-body">
+						<h5 class="card-title">车间控制</h5>
+						<div class="col-md-4">
+							<button id="toggle-animation" class="btn btn-primary">物料1 运行动画</button>
+							<button id="toggle-animation-1" class="btn btn-primary">物料2 运行动画</button>
+							<button id="spawn-material" class="btn btn-primary">生成物料1</button>
+							<button id="spawn-material-1" class="btn btn-primary">生成物料2</button>
+							<button id="reset-view" class="btn btn-secondary">视角复位</button>
+						</div>
+					<div class="card-text">当前状态：<span id="animation-status"></span></div>
+					<div class="card-text">当前状态：<span id="animation-status1"></span></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="importmap">
+			{
+				"imports":{
+					"three":"/three.js-r179/build/three.module.js",
+					"three/addons/":"/three.js-r179/examples/jsm/",
+					"@tweenjs/tween.js":"/tween.js/dist/tween.esm.js"
+				}
+			}
+		</script>
+		<script type='module' src='index.js' ></script>
+
+		
+
+
+</body>
+<style>
+	body {
+		overflow: hidden;
+		margin:0px;
+		padding:0px;
+	}
+	#scene-container {
+		width: 100vw;
+		height: 100vh;
+	}
+
+</style>
+</html>
