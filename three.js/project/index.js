@@ -7,7 +7,7 @@ import { initControls } from './modules/controls.js';
 import { createBuildings } from './modules/buildings.js';
 import { createRoads } from './modules/roads.js';
 import { createVegetation } from './modules/vegetation.js';
-import { startPatrolAnimation, pulseObject } from './modules/animation.js';
+import { startPatrolAnimation, stopPatrolAnimation, pulseObject } from './modules/animation.js';
 import { showInfo, hidePanel } from './modules/infoPanel.js';
 
 // ── 初始化 ──────────────────────────────────────────────
@@ -67,27 +67,42 @@ window.__controls = controls;
 
 // ── 巡游动画 ────────────────────────────────────────────
 let patrolActive = false;
-document.getElementById('btn-patrol').addEventListener('click', () => {
+const btnPatrol = document.getElementById('btn-patrol');
+const tooltip = document.getElementById('tooltip');
+const defaultTooltip = '鼠标左键旋转 · 滚轮缩放 · 右键平移 · 点击对象查看信息';
+
+btnPatrol.addEventListener('click', () => {
     if (!patrolActive) {
         patrolActive = true;
-        document.getElementById('btn-patrol').classList.add('active');
-        startPatrolAnimation(camera, controls, TWEEN);
-        setTimeout(() => {
-            patrolActive = false;
-            document.getElementById('btn-patrol').classList.remove('active');
-        }, 15000);
+        btnPatrol.textContent = '停止巡游';
+        btnPatrol.classList.add('active');
+        startPatrolAnimation(camera, controls, TWEEN,
+            (label) => { tooltip.textContent = `巡游中：${label}`; },
+            () => {
+                patrolActive = false;
+                btnPatrol.textContent = '场景巡游';
+                btnPatrol.classList.remove('active');
+                tooltip.textContent = defaultTooltip;
+            }
+        );
+    } else {
+        patrolActive = false;
+        stopPatrolAnimation();
+        btnPatrol.textContent = '场景巡游';
+        btnPatrol.classList.remove('active');
+        tooltip.textContent = defaultTooltip;
     }
 });
 
-// ── 建筑位置调整 GUI ────────────────────────────────────
-const gui = new GUI({ title: '建筑位置调整', width: 260 });
+// ── 位置调整 GUI ────────────────────────────────────────
+const gui = new GUI({ title: '对象位置调整', width: 260 });
 gui.domElement.style.position = 'fixed';
 gui.domElement.style.right = '10px';
 gui.domElement.style.top = '60px';
 gui.close();
 
 const guiState = {
-    建筑: '（点击建筑选择）',
+    对象: '（点击对象选择）',
     X: 0,
     Y: 0,
     Z: 0,
@@ -96,6 +111,8 @@ const guiState = {
     缩放X: 1,
     缩放Y: 1,
     缩放Z: 1,
+    宽度: 1,
+    长度: 1,
     打印坐标: () => {
         if (selectedBuilding) {
             const p = selectedBuilding.position;
@@ -107,9 +124,9 @@ const guiState = {
 };
 
 let selectedBuilding = null;
-let xCtrl, yCtrl, zCtrl, ryCtrl, scaleCtrl, scaleXCtrl, scaleYCtrl, scaleZCtrl, nameCtrl;
+let xCtrl, yCtrl, zCtrl, ryCtrl, scaleCtrl, scaleXCtrl, scaleYCtrl, scaleZCtrl, nameCtrl, widthCtrl, lengthCtrl;
 
-nameCtrl = gui.add(guiState, '建筑').name('当前建筑').listen();
+nameCtrl = gui.add(guiState, '对象').name('当前对象').listen();
 xCtrl = gui.add(guiState, 'X', -200, 200, 0.5).name('X 位置').onChange(v => {
     if (selectedBuilding) selectedBuilding.position.x = v;
 });
@@ -136,16 +153,30 @@ scaleYCtrl = gui.add(guiState, '缩放Y', 0.1, 5, 0.05).name('Y 轴缩放').onCh
 scaleZCtrl = gui.add(guiState, '缩放Z', 0.1, 5, 0.05).name('Z 轴缩放').onChange(v => {
     if (selectedBuilding) selectedBuilding.scale.z = guiState['缩放'] * v;
 });
+widthCtrl = gui.add(guiState, '宽度', 0.5, 30, 0.5).name('宽度（道路）').onChange(v => {
+    if (selectedBuilding && selectedBuilding.userData.type === 'road') {
+        // 道路宽度对应 X 轴缩放（rotY=0时）或 Z 轴缩放（rotY=90°时）
+        const ry = Math.abs(selectedBuilding.rotation.y % Math.PI);
+        if (ry < 0.1) selectedBuilding.scale.x = v;
+        else selectedBuilding.scale.z = v;
+    }
+});
+lengthCtrl = gui.add(guiState, '长度', 1, 400, 1).name('长度（道路）').onChange(v => {
+    if (selectedBuilding && selectedBuilding.userData.type === 'road') {
+        const ry = Math.abs(selectedBuilding.rotation.y % Math.PI);
+        if (ry < 0.1) selectedBuilding.scale.z = v;
+        else selectedBuilding.scale.x = v;
+    }
+});
 gui.add(guiState, '打印坐标').name('📋 打印当前坐标到控制台');
 
-function selectBuilding(obj) {
-    // 找到顶层 group（建筑根节点）
+function selectObject(obj) {
     let root = obj;
     while (root.parent && root.parent !== scene) {
         root = root.parent;
     }
-    if (!buildings.includes(root)) return null;
-    return root;
+    if (buildings.includes(root) || roads.includes(root)) return root;
+    return null;
 }
 
 // ── 点击拾取 ────────────────────────────────────────────
@@ -161,20 +192,23 @@ renderer.domElement.addEventListener('click', (e) => {
 
     if (hits.length > 0) {
         const obj = hits[0].object;
-        const root = selectBuilding(obj);
+        const root = selectObject(obj);
 
         if (root) {
             selectedBuilding = root;
-            const name = root.userData.name || root.name;
-            guiState['建筑'] = name;
+            const name = root.userData.name || root.name || '道路';
+            guiState['对象'] = name;
             guiState.X = parseFloat(root.position.x.toFixed(1));
             guiState.Y = parseFloat(root.position.y.toFixed(1));
             guiState.Z = parseFloat(root.position.z.toFixed(1));
             guiState['旋转Y'] = parseFloat(THREE.MathUtils.radToDeg(root.rotation.y).toFixed(1));
             guiState['缩放'] = parseFloat(root.scale.y.toFixed(2));
-            guiState['缩放X'] = parseFloat((root.scale.x / root.scale.y).toFixed(2));
+            guiState['缩放X'] = parseFloat((root.scale.x / Math.max(root.scale.y, 0.001)).toFixed(2));
             guiState['缩放Y'] = 1;
-            guiState['缩放Z'] = parseFloat((root.scale.z / root.scale.y).toFixed(2));
+            guiState['缩放Z'] = parseFloat((root.scale.z / Math.max(root.scale.y, 0.001)).toFixed(2));
+            // 道路宽/长：scale 默认1对应几何体原始尺寸，直接读 scale
+            guiState['宽度'] = parseFloat(root.scale.x.toFixed(1));
+            guiState['长度'] = parseFloat(root.scale.z.toFixed(1));
             xCtrl.updateDisplay();
             yCtrl.updateDisplay();
             zCtrl.updateDisplay();
@@ -183,6 +217,8 @@ renderer.domElement.addEventListener('click', (e) => {
             scaleXCtrl.updateDisplay();
             scaleYCtrl.updateDisplay();
             scaleZCtrl.updateDisplay();
+            widthCtrl.updateDisplay();
+            lengthCtrl.updateDisplay();
             gui.open();
         }
 

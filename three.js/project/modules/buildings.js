@@ -138,8 +138,8 @@ const GLB_BUILDING_CONFIGS = [
     { id: 'admin2',    name: '行政中心',                      position: [38, 0, 22],     size: [22, 18, 16],       info: { 建筑面积: '4000 m²', 楼层: '4层', 建成年份: '2006年', 简介: '学校行政管理中心。' } },
     // ── 北部科研区 ───────────────────────────────────────────
     { id: 'lab13',     name: '13号楼（第三实验大楼）',         position: [-59, 0, -55],   size: [18, 10, 8],        info: { 建筑面积: '6000 m²', 楼层: '5层', 建成年份: '2014年', 简介: '理工科综合实验楼，配备精密仪器室。' } },
-    { id: 'bio14',     name: '14号楼（生物与环境工程学院）',   position: [-59, 0, -92],   size: [18, 10, 8],        info: { 建筑面积: '7200 m²', 楼层: '6层', 建成年份: '2012年', 简介: '生物与环境工程学院科研教学楼。' } },
-    { id: 'build15',   name: '15号楼',                        position: [-94, 0, -92],   size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2015年', 简介: '15号教学科研楼。' } },
+    { id: 'bio14',     name: '14号楼（生物与环境工程学院）',   position: [-59, 0, -80],   size: [18, 10, 8],        info: { 建筑面积: '7200 m²', 楼层: '6层', 建成年份: '2012年', 简介: '生物与环境工程学院科研教学楼。' } },
+    { id: 'build15',   name: '15号楼',                        position: [-94, 0, -80],   size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2015年', 简介: '15号教学科研楼。' } },
     { id: 'build16',   name: '16号楼',                        position: [-45, 0, -20],   size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2014年', 简介: '16号教学科研楼。' } },
     { id: 'build17',   name: '17号楼',                        position: [-74, 0, -20],   size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2016年', 简介: '17号教学科研楼。' } },
     { id: 'build18',   name: '18号楼',                        position: [-103, 0, -20],  size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2017年', 简介: '18号教学科研楼。' } },
@@ -162,6 +162,10 @@ const GLB_BUILDING_CONFIGS = [
     { id: 'build6',    name: '6号楼',                          position: [116.5, 0, -34], size: [18, 10, 8],    info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2010年', 简介: '6号教学楼。' } },
     { id: 'build7',    name: '7号楼',                          position: [116.5, 0, -21], size: [18, 10, 8],    info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2010年', 简介: '7号教学楼。' } },
     { id: 'build8',    name: '8号楼',                          position: [116.5, 0, -8],  size: [18, 10, 8],    info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2010年', 简介: '8号教学楼。' } },
+    { id: 'build9',    name: '9号楼',                          position: [48.0, 0, -135],  size: [22, 18, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2012年', 简介: '9号教学科研楼。' } },
+    { id: 'build10',   name: '10号楼',                         position: [8.0, 0, -120],   size: [20, 16, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2013年', 简介: '10号教学科研楼。' } },
+    { id: 'build11',   name: '11号楼',                         position: [-1.0, 0, -140],  size: [20, 16, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2014年', 简介: '11号教学科研楼。' } },
+    { id: 'build12',   name: '12号楼',                         position: [8.0, 0, -160],   size: [20, 16, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2015年', 简介: '12号教学科研楼。' } },
 ];
 
 async function createGlbBuildings(scene) {
@@ -267,6 +271,49 @@ async function createTeachingBuildings(scene) {
     return results;
 }
 
+async function createMansion(scene) {
+    const INFO = {
+        建筑面积: '8000 m²',
+        楼层: '4层',
+        建成年份: '2016年',
+        简介: '综合楼，位于2号楼南侧。'
+    };
+    try {
+        const gltf = await loadModel('./assets/models/mansion.glb');
+        const model = gltf.scene;
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.z);
+        model.scale.setScalar(40 / maxDim);
+        box.setFromObject(model);
+        model.position.set(71.5, -box.min.y, -23);
+        model.rotation.y = Math.PI / 2;
+        model.traverse(child => {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                child.userData = { type: 'building', name: 'Mansion', info: INFO };
+            }
+        });
+        model.userData = { type: 'building', name: 'Mansion', info: INFO };
+        model.name = 'mansion';
+        scene.add(model);
+        return model;
+    } catch (e) {
+        console.warn('mansion.glb 加载失败，使用几何体替代', e);
+        const data = {
+            id: 'mansion', name: 'Mansion',
+            position: [71.5, 0, -47],
+            size: [20, 16, 16],
+            color: 0xd0c8b8, roofColor: 0x665544,
+            info: INFO
+        };
+        const b = createBuilding(data);
+        scene.add(b);
+        return b;
+    }
+}
+
 export async function createBuildings(scene) {
     const buildings = [];
     for (const data of BUILDING_DATA) {
@@ -280,8 +327,8 @@ export async function createBuildings(scene) {
     for (const b of glbBuildings) buildings.push(b);
     const teachings = await createTeachingBuildings(scene);
     for (const t of teachings) buildings.push(t);
-    const track = createTrack(scene);
-    buildings.push(track);
+    const mansion = await createMansion(scene);
+    if (mansion) buildings.push(mansion);
     return buildings;
 }
 
