@@ -5,7 +5,6 @@ function createTree(x, z, height = 5) {
     group.name = 'tree';
     group.userData = { type: 'vegetation' };
 
-    // 树干
     const trunkGeo = new THREE.CylinderGeometry(0.2, 0.3, height * 0.4, 8);
     const trunkMat = new THREE.MeshLambertMaterial({ color: 0x8b5a2b });
     const trunk = new THREE.Mesh(trunkGeo, trunkMat);
@@ -14,7 +13,6 @@ function createTree(x, z, height = 5) {
     trunk.userData = group.userData;
     group.add(trunk);
 
-    // 树冠（三层锥体）
     const crownMat = new THREE.MeshLambertMaterial({ color: 0x2d7a2d });
     const layers = [
         { r: height * 0.28, h: height * 0.45, y: height * 0.55 },
@@ -38,7 +36,6 @@ function createBush(x, z) {
     const group = new THREE.Group();
     group.name = 'bush';
     group.userData = { type: 'vegetation' };
-
     const mat = new THREE.MeshLambertMaterial({ color: 0x3a8a3a });
     const positions = [[0, 0], [0.6, 0.3], [-0.5, 0.2], [0.2, -0.4]];
     for (const [dx, dz] of positions) {
@@ -50,7 +47,6 @@ function createBush(x, z) {
         mesh.userData = group.userData;
         group.add(mesh);
     }
-
     group.position.set(x, 0, z);
     return group;
 }
@@ -58,31 +54,89 @@ function createBush(x, z) {
 export function createVegetation(scene) {
     const items = [];
 
-    // 主干道两侧行道树
-    for (let i = -7; i <= 7; i++) {
-        items.push(createTree(-6, i * 10, 6));
-        items.push(createTree(6, i * 10, 6));
-        items.push(createTree(i * 10, -6, 6));
-        items.push(createTree(i * 10, 6, 6));
+    // 树人街（南侧）行道树
+    for (let i = -10; i <= 10; i++) {
+        items.push(createTree(i * 11, 128, 5));
+        items.push(createTree(i * 11, 150, 5));
     }
 
-    // 建筑周围灌木
-    const bushPositions = [
-        [-18, -12], [18, -12], [-18, 32], [18, 32],
-        [-42, 5], [-28, 5], [28, 5], [42, 5],
-        [-55, -38], [-45, -38], [48, -30], [62, -30],
-        [-8, -28], [8, -28]
+    // 校内南北主干道两侧行道树
+    for (let z = 50; z <= 120; z += 12) {
+        items.push(createTree(-7, z, 6));
+        items.push(createTree(7, z, 6));
+    }
+
+    // 中心绿轴区域散树
+    const greenAxisTrees = [
+        [-25, -10, 7], [25, -10, 7],
+        [-20, -30, 6], [20, -30, 6],
+        [-10, -45, 8], [10, -45, 8],
+        [0, -50, 7],
+        [-30, -5, 6], [30, -5, 6],
     ];
-    for (const [x, z] of bushPositions) {
+    for (const [x, z, h] of greenAxisTrees) {
+        items.push(createTree(x, z, h));
+    }
+
+    // 东西环路北侧行道树
+    for (let x = -95; x <= 95; x += 14) {
+        items.push(createTree(x, -45, 6));
+        items.push(createTree(x, -35, 6));
+    }
+
+    // 西侧湖州街行道树
+    for (let z = -140; z <= 140; z += 12) {
+        items.push(createTree(-108, z, 6));
+        items.push(createTree(-122, z, 6));
+    }
+
+    // 东侧日积街行道树
+    for (let z = -140; z <= 140; z += 12) {
+        items.push(createTree(108, z, 6));
+        items.push(createTree(122, z, 6));
+    }
+
+    // 操场周围灌木
+    for (let a = 0; a < Math.PI * 2; a += 0.5) {
+        const bx = 62 + Math.cos(a) * 32;
+        const bz = -132 + Math.sin(a) * 22;
+        items.push(createBush(bx, bz));
+    }
+
+    // 宿舍区（西北清乐园）周围灌木
+    const dormBushes = [
+        [-98, -45], [-98, -60], [-98, -75], [-98, -90], [-98, -105],
+        [-80, -115], [-70, -115],
+    ];
+    for (const [x, z] of dormBushes) {
         items.push(createBush(x, z));
     }
 
-    // 草坪区域散树
-    const lawnTrees = [
-        [-60, 20, 7], [60, 20, 8], [-60, -50, 6],
-        [60, -50, 7], [0, -60, 8], [0, 60, 7]
+    // 西南宿舍区（致和园）周围灌木
+    const zhyBushes = [
+        [-98, 30], [-98, 45], [-98, 60], [-98, 75],
+        [-78, 78], [-78, 28],
     ];
-    for (const [x, z, h] of lawnTrees) {
+    for (const [x, z] of zhyBushes) {
+        items.push(createBush(x, z));
+    }
+
+    // 教学楼前广场两侧灌木
+    const teachBushes = [
+        [-65, 75], [-65, 95], [-65, 110],
+        [65, 75], [65, 95], [65, 110],
+    ];
+    for (const [x, z] of teachBushes) {
+        items.push(createBush(x, z));
+    }
+
+    // 北部科研区散树
+    const northTrees = [
+        [-40, -70, 7], [-40, -100, 6],
+        [30, -70, 7], [30, -100, 6],
+        [0, -75, 8], [0, -110, 7],
+    ];
+    for (const [x, z, h] of northTrees) {
         items.push(createTree(x, z, h));
     }
 
