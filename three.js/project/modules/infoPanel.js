@@ -6,9 +6,9 @@ const closeBtn = document.getElementById('panel-close');
 closeBtn.addEventListener('click', () => hidePanel());
 
 export function showInfo(userData) {
-    if (!userData || !userData.name) return;
+    if (!userData || (!userData.name && !userData.type)) return;
 
-    panelTitle.textContent = userData.name;
+    panelTitle.textContent = userData.name || '校园道路';
 
     let html = '<table>';
     if (userData.info) {

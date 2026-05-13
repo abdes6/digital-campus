@@ -82,13 +82,14 @@ export function startPatrolAnimation(camera, controls, TWEEN, onLabel, onDone) {
 }
 
 export function pulseObject(mesh, TWEEN) {
+    const sx = mesh.scale.x, sy = mesh.scale.y, sz = mesh.scale.z;
     const origin = { s: 1 };
     new TWEEN.Tween(origin, TWEEN)
         .to({ s: 1.15 }, 400)
         .easing(TWEEN.Easing.Quadratic.Out)
         .yoyo(true)
         .repeat(1)
-        .onUpdate(({ s }) => mesh.scale.setScalar(s))
-        .onComplete(() => mesh.scale.setScalar(1))
+        .onUpdate(({ s }) => mesh.scale.set(sx * s, sy * s, sz * s))
+        .onComplete(() => mesh.scale.set(sx, sy, sz))
         .start();
 }

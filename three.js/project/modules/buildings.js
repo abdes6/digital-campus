@@ -85,7 +85,7 @@ function createTrack(scene) {
     lawn.userData = group.userData;
     group.add(lawn);
 
-    group.position.set(62, 0, -132);
+    group.position.set(120, 0, -200);
     scene.add(group);
     return group;
 }
@@ -143,8 +143,8 @@ const GLB_BUILDING_CONFIGS = [
     { id: 'build16',   name: '16号楼',                        position: [-45, 0, -20],   size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2014年', 简介: '16号教学科研楼。' } },
     { id: 'build17',   name: '17号楼',                        position: [-74, 0, -20],   size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2016年', 简介: '17号教学科研楼。' } },
     { id: 'build18',   name: '18号楼',                        position: [-103, 0, -20],  size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2017年', 简介: '18号教学科研楼。' } },
-    { id: 'build22',   name: '22号楼',                        position: [-74, 0, 5],     size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5500 m²', 建成年份: '2018年', 简介: '22号教学科研楼。' } },
-    { id: 'build23',   name: '23号楼',                        position: [-74, 0, 26],    size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2019年', 简介: '23号教学科研楼。' } },
+    { id: 'build22',   name: '22号楼',                        position: [-74, 0, 8],     size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5500 m²', 建成年份: '2018年', 简介: '22号教学科研楼。' } },
+    { id: 'build23',   name: '23号楼',                        position: [-74, 0, 20],    size: [18, 10, 8],        info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2019年', 简介: '23号教学科研楼。' } },
     // ── 西北宿舍区（清乐园）──────────────────────────────────
     { id: 'qly1',      name: '清乐园1号楼',                   position: [-160, 0, -75],  size: [16, 28, 14],       info: { 建筑面积: '5600 m²', 楼层: '7层', 建成年份: '2006年', 简介: '男生宿舍，可住800人。' } },
     { id: 'qly2',      name: '清乐园2号楼',                   position: [-140, 0, -75],  size: [16, 28, 14],       info: { 建筑面积: '5600 m²', 楼层: '7层', 建成年份: '2008年', 简介: '女生宿舍，可住800人。' } },
@@ -163,9 +163,16 @@ const GLB_BUILDING_CONFIGS = [
     { id: 'build7',    name: '7号楼',                          position: [116.5, 0, -21], size: [18, 10, 8],    info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2010年', 简介: '7号教学楼。' } },
     { id: 'build8',    name: '8号楼',                          position: [116.5, 0, -8],  size: [18, 10, 8],    info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2010年', 简介: '8号教学楼。' } },
     { id: 'build9',    name: '9号楼',                          position: [48.0, 0, -135],  size: [22, 18, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2012年', 简介: '9号教学科研楼。' } },
-    { id: 'build10',   name: '10号楼',                         position: [8.0, 0, -120],   size: [20, 16, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2013年', 简介: '10号教学科研楼。' } },
-    { id: 'build11',   name: '11号楼',                         position: [-1.0, 0, -140],  size: [20, 16, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2014年', 简介: '11号教学科研楼。' } },
+    { id: 'build10',   name: '10号楼',                         position: [8.0, 0, -125],   size: [20, 16, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2013年', 简介: '10号教学科研楼。' } },
+    { id: 'build11',   name: '11号楼',                         position: [-1.0, 0, -145],  size: [20, 16, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2014年', 简介: '11号教学科研楼。' } },
     { id: 'build12',   name: '12号楼',                         position: [8.0, 0, -160],   size: [20, 16, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2015年', 简介: '12号教学科研楼。' } },
+    // ── 操场南侧 ─────────────────────────────────────────────────
+    { id: 'build26',   name: '26号楼',                         position: [135, 0, -135],   size: [22, 18, 16],   info: { 建筑面积: '5500 m²', 楼层: '5层', 建成年份: '2016年', 简介: '26号教学科研楼。' } },
+    // ── 体育馆后方建筑群 ──────────────────────────────────────────
+    { id: 'zhiqinWest', name: '致勤西楼',                      position: [45, 0, -235],    size: [28, 20, 16],   info: { 建筑面积: '6000 m²', 楼层: '5层', 建成年份: '2013年', 简介: '致勤西楼，综合教学科研楼。' } },
+    { id: 'zhiqinEast', name: '致勤东楼',                      position: [100, 0, -235],   size: [28, 20, 16],   info: { 建筑面积: '6000 m²', 楼层: '5层', 建成年份: '2013年', 简介: '致勤东楼，综合教学科研楼。' } },
+    { id: 'canteen',    name: '食堂',                           position: [72, 0, -265],    size: [40, 14, 18],   info: { 建筑面积: '8000 m²', 楼层: '3层', 建成年份: '2008年', 简介: '学生食堂，可同时容纳2000人就餐。' } },
+    { id: 'complex',    name: '综合楼',                         position: [72, 0, -295],    size: [36, 22, 18],   info: { 建筑面积: '9000 m²', 楼层: '6层', 建成年份: '2011年', 简介: '综合服务楼，含超市、银行及学生活动中心。' } },
 ];
 
 async function createGlbBuildings(scene) {
@@ -314,6 +321,91 @@ async function createMansion(scene) {
     }
 }
 
+async function createGym(scene) {
+    const INFO = {
+        建筑面积: '6000 m²',
+        楼层: '3层',
+        建成年份: '2014年',
+        简介: '综合体育馆，含篮球场、游泳池及健身区。'
+    };
+    try {
+        const gltf = await loadModel('./assets/models/gym.glb');
+        const model = gltf.scene;
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.z);
+        model.scale.setScalar(40 / maxDim);
+        model.rotation.y = Math.PI / 2;
+        box.setFromObject(model);
+        model.position.set(75, -box.min.y, -200);
+        model.traverse(child => {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                child.userData = { type: 'building', name: '体育馆', info: INFO };
+            }
+        });
+        model.userData = { type: 'building', name: '体育馆', info: INFO };
+        model.name = 'gym';
+        scene.add(model);
+        return model;
+    } catch (e) {
+        console.warn('gym.glb 加载失败，使用几何体替代', e);
+        const data = {
+            id: 'gym', name: '体育馆',
+            position: [75, 0, -155],
+            size: [40, 18, 30],
+            color: 0xd4ccc0, roofColor: 0x665544,
+            info: INFO
+        };
+        const b = createBuilding(data);
+        scene.add(b);
+        return b;
+    }
+}
+
+async function createSchoolGate(scene) {
+    const INFO = {
+        建筑面积: '500 m²',
+        建成年份: '2005年',
+        简介: '校园正门，标志性入口建筑。'
+    };
+    try {
+        const gltf = await loadModel('./assets/models/school gate.glb');
+        const model = gltf.scene;
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.z);
+        model.scale.setScalar(30 / maxDim);
+        box.setFromObject(model);
+        model.position.set(48, -box.min.y, -110);
+        model.rotation.y = Math.PI / 2;
+        model.traverse(child => {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                child.userData = { type: 'building', name: '校门', info: INFO };
+            }
+        });
+        model.userData = { type: 'building', name: '校门', info: INFO };
+        model.name = 'schoolGate';
+        scene.add(model);
+        return model;
+    } catch (e) {
+        console.warn('school gate.glb 加载失败，使用几何体替代', e);
+        const data = {
+            id: 'schoolGate', name: '校门',
+            position: [48, 0, -110],
+            size: [30, 10, 8],
+            color: 0xe8e0d0, roofColor: 0x886644,
+            info: INFO
+        };
+        const b = createBuilding(data);
+        scene.add(b);
+        return b;
+    }
+}
+
 export async function createBuildings(scene) {
     const buildings = [];
     for (const data of BUILDING_DATA) {
@@ -329,6 +421,12 @@ export async function createBuildings(scene) {
     for (const t of teachings) buildings.push(t);
     const mansion = await createMansion(scene);
     if (mansion) buildings.push(mansion);
+    const gym = await createGym(scene);
+    if (gym) buildings.push(gym);
+    const track = createTrack(scene);
+    if (track) buildings.push(track);
+    const schoolGate = await createSchoolGate(scene);
+    if (schoolGate) buildings.push(schoolGate);
     return buildings;
 }
 

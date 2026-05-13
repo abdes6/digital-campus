@@ -29,7 +29,7 @@ export function initScene() {
     scene.add(fill);
 
     // 地面
-    const groundGeo = new THREE.PlaneGeometry(400, 400);
+    const groundGeo = new THREE.PlaneGeometry(500, 700);
     const groundMat = new THREE.MeshLambertMaterial({ color: 0x4a7c3f });
     const ground = new THREE.Mesh(groundGeo, groundMat);
     ground.rotation.x = -Math.PI / 2;

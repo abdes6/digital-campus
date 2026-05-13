@@ -8,10 +8,10 @@ const PLAZA_COLORS  = {
     dorm:   0xbcb4a8,  // 宿舍区广场（深灰米）
 };
 
-function createRoad(x, z, width, length, rotY = 0, yBase = 0.02) {
+function createRoad(x, z, width, length, rotY = 0, yBase = 0.02, name = '校园道路') {
     const group = new THREE.Group();
     group.name = 'road';
-    group.userData = { type: 'road' };
+    group.userData = { type: 'road', name };
 
     const roadGeo = new THREE.PlaneGeometry(width, length);
     const roadMat = new THREE.MeshLambertMaterial({
@@ -88,64 +88,56 @@ export function createRoads(scene) {
 
     // ── 校园外围边界道路 ──────────────────────────────────────────
     // 树人街：南侧横向主干道 Z=140，避开行道树（树在z=128,150）
-    roads.push(createRoad(0, 140, 14, 220, Math.PI / 2, 0.06));
+    roads.push(createRoad(0, 140, 14, 220, Math.PI / 2, 0.06, '树人街'));
     // 湖州街：西侧纵向 X=-170，远离西侧行道树（x=-108,-122）
-    roads.push(createRoad(-170, 0, 10, 300, 0, 0.02));
+    roads.push(createRoad(-170, 0, 10, 300, 0, 0.02, '湖州街'));
     // 日积街：东侧纵向 X=135，远离东侧行道树（x=108,122）
-    roads.push(createRoad(135, 0, 10, 300, 0, 0.02));
-
+    roads.push(createRoad(140, 25, 20, 280, 0, 0.02, '日积街'));
 
     // ── 校内南北主干道（X=0，分三段绕开教学楼区 Z=50~130）────────
     // 南段：Z=109~133
-    roads.push(createRoad(0, 121, 10, 24, 0, 0.02));
+    roads.push(createRoad(0, 121, 10, 24, 0, 0.02, '校内南北主干道'));
     // 中段：Z=-5~64
-    roads.push(createRoad(0, 30, 10, 160, 0, 0.02));
+    roads.push(createRoad(0, 30, 10, 160, 0, 0.02, '校内南北主干道'));
     // 北段：Z=-112~-6
-    roads.push(createRoad(0, -59, 10, 106, 0, 0.02));
+    roads.push(createRoad(0, -59, 10, 106, 0, 0.02, '校内南北主干道'));
 
-    // ── 教学区横向道路 ────────────────────────────────────────────
-    // 教学楼南侧横路 Z=109，西段 X=-130~-72（教学楼西边界约X=-70）
-    roads.push(createRoad(-101, 109, 8, 60, Math.PI / 2, 0.06));
- 
 
     // ── 中部核心区横向道路 ────────────────────────────────────────
-    // 医学院南侧横路 Z=-5，贯通东西（医学院南边界约Z=10）
-    roads.push(createRoad(0, -5, 8, 220, Math.PI / 2, 0.06));
-
-    roads.push(createRoad(-35, -38, 6, 68, 0, 0.02));
+    roads.push(createRoad(20, 8, 8, 220, Math.PI / 2, 0.06, '核心区横路'));
+    roads.push(createRoad(-33, -38, 6, 100, 0, 0.02, '核心区纵路'));
 
     // ── 北部科研区道路 ────────────────────────────────────────────
-    // 16/17/18号楼南侧横路 Z=-28，X=-120~-35（楼南边界Z=-24）
-    roads.push(createRoad(-78, -28, 7, 86, Math.PI / 2, 0.06));
-    // 13/14/15号楼北侧横路 Z=-100，X=-110~-45（楼北边界Z=-88）
-    roads.push(createRoad(-14.5, -100, 30,300 , Math.PI / 2, 0.06));
-    // 科研区西纵路 X=-120，Z=-100~-28
-    roads.push(createRoad(-120, -64, 7, 72, 0, 0.02));
+    roads.push(createRoad(-78, -28, 7, 86, Math.PI / 2, 0.06, '科研区横路'));
+    roads.push(createRoad(-14.5, -100, 30, 300, Math.PI / 2, 0.06, '科研区南横路'));
+    roads.push(createRoad(-120, -64, 7, 72, 0, 0.02, '科研区西纵路'));
 
     // ── 东侧建筑群道路（2-8号楼）────────────────────────────────
-    // 4/5号楼南侧横路 Z=-55，X=82~130（楼南边界Z=-51）
-    roads.push(createRoad(107, -55, 7, 50, Math.PI / 2, 0.06));
-    // 东侧纵路 X=105，Z=-68~-4（5-8号楼西侧xMin=107.5）
-    roads.push(createRoad(105, -36, 6, 64, 0, 0.02));
+    roads.push(createRoad(107, -55, 7, 50, Math.PI / 2, 0.06, '东侧横路'));
+    roads.push(createRoad(105, -36, 6, 64, 0, 0.02, '东侧纵路'));
 
+    // ── 校门到体育馆道路 ──────────────────────────────────────────
+    // 横向段：从校门(x=48)到体育馆(x=75)，z=-110
+    roads.push(createRoad(61.5, -110, 7, 27, Math.PI / 2, 0.04, '校门至体育馆路'));
+    // 纵向段：从z=-110到z=-200，x=75
+    roads.push(createRoad(75, -155, 7, 90, 0, 0.04, '校门至体育馆路'));
+
+    // ── 9号楼/11号楼 至 致勤西楼 道路 ───────────────────────────
+    // 纵向主路：x=48，从9号楼南侧(z=-143)到致勤西楼北侧(z=-227)
+    roads.push(createRoad(48, -185, 7, 84, 0, 0.04, '致勤区纵路'));
+    // 横向支路：11号楼(x=-1)向东接纵向主路(x=48)，z=-148
+    roads.push(createRoad(23.5, -148, 7, 49, Math.PI / 2, 0.04, '11号楼至致勤区横路'));
 
     // ── 清乐园宿舍区道路（X=-170~-125，Z=-107~-68）───────────────
-    // 清乐园东侧纵路 X=-122，Z=-110~-68
-    roads.push(createRoad(-122, -89, 7, 42, 0, 0.02));
-    // 清乐园南侧横路 Z=-68，X=-172~-120
-    roads.push(createRoad(-148, -68, 6, 54, Math.PI / 2, 0.06));
-    // 清乐园北侧横路 Z=-110，X=-172~-120（3-4号楼北边界Z=-107）
-    roads.push(createRoad(-148, -110, 6, 54, Math.PI / 2, 0.06));
+    roads.push(createRoad(-122, -89, 7, 42, 0, 0.02, '清乐园东纵路'));
+    roads.push(createRoad(-148, -68, 6, 54, Math.PI / 2, 0.06, '清乐园南横路'));
+    roads.push(createRoad(-148, -110, 6, 54, Math.PI / 2, 0.06, '清乐园北横路'));
 
     // ── 致和园宿舍区道路（X=-100~-80，Z=166~189）─────────────────
-    // 致和园东侧纵路 X=-78，Z=163~192（楼xMax=-80）
-    roads.push(createRoad(-78, 177, 6, 30, 0, 0.02));
-    // 致和园西侧纵路 X=-105，Z=163~192（楼xMin=-100）
-    roads.push(createRoad(-105, 177, 6, 30, 0, 0.02));
-    // 致和园南侧横路 Z=163，X=-107~-76（楼南边界Z=166.5）
-    roads.push(createRoad(-90, 163, 6, 32, Math.PI / 2, 0.06));
-    // 致和园北侧横路 Z=192，X=-107~-76（楼北边界Z=188.5）
-    roads.push(createRoad(-90, 192, 6, 32, Math.PI / 2, 0.06));
+    roads.push(createRoad(-78, 177, 6, 30, 0, 0.02, '致和园东纵路'));
+    roads.push(createRoad(-105, 177, 6, 30, 0, 0.02, '致和园西纵路'));
+    roads.push(createRoad(-90, 163, 6, 32, Math.PI / 2, 0.06, '致和园南横路'));
+    roads.push(createRoad(-90, 192, 6, 32, Math.PI / 2, 0.06, '致和园北横路'));
 
     for (const r of roads) {
         scene.add(r);
