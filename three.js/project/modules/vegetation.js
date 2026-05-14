@@ -59,8 +59,9 @@ export function createVegetation(scene) {
         items.push(createTree(i * 11, 128, 5));
     }
 
-    // 校内南北主干道两侧行道树
+    // 校内南北主干道两侧行道树 — 跳过南门广场(z=110,120)及教学区广场(z=86)范围
     for (let z = 50; z <= 120; z += 12) {
+        if (z === 86 || z === 110 || z === 120) continue;
         items.push(createTree(-7, z, 6));
         items.push(createTree(7, z, 6));
     }
@@ -71,7 +72,7 @@ export function createVegetation(scene) {
         [-20, -30, 6], [20, -30, 6],
         // [-10, -45, 8], [10, -45, 8],  // 与横路(z=-115~-85)冲突
         // [0, -50, 7],                   // 同上
-        [-30, -5, 6], [30, -5, 6],
+        [30, -5, 6],
     ];
     for (const [x, z, h] of greenAxisTrees) {
         items.push(createTree(x, z, h));
@@ -84,11 +85,13 @@ export function createVegetation(scene) {
         items.push(createTree(x, -35, 6));
     }
 
-    // 西侧湖州街行道树 — 裁剪掉与清乐园横路冲突区段(z=-113~-65)
+    // 西侧湖州街行道树 — 裁剪掉与清乐园横路冲突区段(z=-113~-65)及科研区西纵路(z=-100~-28)
     for (let z = -140; z <= 140; z += 12) {
         if (z >= -116 && z <= -62) continue;
         items.push(createTree(-108, z, 6));
-        items.push(createTree(-122, z, 6));
+        if (z < -100 || z > -28) {
+            items.push(createTree(-122, z, 6));
+        }
     }
 
     // 东侧日积街行道树 — 裁剪掉与东侧横路冲突区段(z=-68~-4)
@@ -109,7 +112,7 @@ export function createVegetation(scene) {
     // 宿舍区（西北清乐园）周围灌木 — 移除与道路冲突的点
     const dormBushes = [
         // [-98, -45], [-98, -60], [-98, -75], [-98, -90], [-98, -105], // 与道路冲突
-        [-80, -115], [-70, -115],
+        // [-80, -115], [-70, -115], // 与科研区南横路(z=-115~-85)冲突
     ];
     for (const [x, z] of dormBushes) {
         items.push(createBush(x, z));
