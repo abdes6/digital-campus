@@ -14,35 +14,29 @@ export function startPatrolAnimation(camera, controls, TWEEN, onLabel, onDone) {
 
     // 覆盖全校园的航点：位置 + 朝向目标 + 区域标签
     // 坐标系：Z+=南 Z-=北 X+=东 X-=西
+    // 按顺时针路线：南门 → 教学区 → 致和园(经新连接路) → 科研区 → 医学院 → 体育馆 → 东侧楼群 → 行政中心 → 返回
     const waypoints = [
-        // 起点：南门鸟瞰
-        { pos: { x: 0,    y: 70,  z: 170  }, target: { x: 0,   y: 0,  z: 130  }, label: '南门入口' },
-        // 综合教学楼（东西各在 x=±30.5, z=90）
-        { pos: { x: 0,    y: 45,  z: 140  }, target: { x: 0,   y: 8,  z: 90   }, label: '综合教学楼' },
-        // 致和园（x=-90, z=170~185）
-        { pos: { x: -60,  y: 35,  z: 195  }, target: { x: -90, y: 8,  z: 177  }, label: '致和园宿舍区' },
-        // 行政中心（x=38, z=22）
-        { pos: { x: 80,   y: 40,  z: 60   }, target: { x: 38,  y: 8,  z: 22   }, label: '行政中心' },
-        // 树兰国际医学院（x=0, z=-20）
-        { pos: { x: 50,   y: 35,  z: 30   }, target: { x: 0,   y: 8,  z: -20  }, label: '树兰国际医学院' },
-        // 接待中心（x=-23, z=-63.5）
-        { pos: { x: 20,   y: 30,  z: -30  }, target: { x: -23, y: 5,  z: -63  }, label: '接待中心' },
-        // 16/17/18号楼（x=-45~-103, z=-20）
-        { pos: { x: -50,  y: 35,  z: 20   }, target: { x: -74, y: 5,  z: -20  }, label: '16-18号楼' },
-        // 13/14/15号楼（x=-59~-94, z=-80）
-        { pos: { x: -40,  y: 35,  z: -50  }, target: { x: -70, y: 5,  z: -80  }, label: '13-15号楼' },
-        // 清乐园（x=-140~-160, z=-75~-100）
-        { pos: { x: -110, y: 40,  z: -50  }, target: { x: -148,y: 8,  z: -87  }, label: '清乐园宿舍区' },
-        // 9-12号楼（x=8~48, z=-120~-160）
-        { pos: { x: 70,   y: 40,  z: -100 }, target: { x: 25,  y: 8,  z: -135 }, label: '9-12号楼' },
-        // 2-3号楼 + mansion（x=71~93, z=-60~-23）
-        { pos: { x: 110,  y: 35,  z: -20  }, target: { x: 80,  y: 5,  z: -50  }, label: '东侧教学楼群' },
-        // 5-8号楼（x=116.5, z=-47~-8）
-        { pos: { x: 150,  y: 35,  z: -30  }, target: { x: 116, y: 5,  z: -28  }, label: '5-8号楼' },
-        // 返回南门鸟瞰
-        { pos: { x: 0,    y: 70,  z: 170  }, target: { x: 0,   y: 0,  z: 130  }, label: '返回南门' },
+        // 起点：南门广场鸟瞰（可俯瞰新建的南门广场与树人街）
+        { pos: { x: 0,    y: 55,  z: 155  }, target: { x: 0,   y: 0,  z: 125  }, label: '南门广场 & 树人街' },
+        // 综合教学楼 + 教学区广场（两栋教学楼间的新广场）
+        { pos: { x: 0,    y: 35,  z: 115  }, target: { x: 0,   y: 8,  z: 90   }, label: '综合教学楼 & 教学区广场' },
+        // 致和园（经致和园连接路观赏西南宿舍区）
+        { pos: { x: -65,  y: 30,  z: 185  }, target: { x: -90, y: 8,  z: 177  }, label: '致和园宿舍区' },
+        // 北部科研区（16-18号楼 + 13-15号楼群）
+        { pos: { x: -100, y: 45,  z: -30  }, target: { x: -74, y: 5,  z: -40  }, label: '北部科研区 & 清乐园' },
+        // 树兰国际医学院 + 中心绿轴 + 医学院广场
+        { pos: { x: 0,    y: 30,  z: 15   }, target: { x: 0,   y: 5,  z: -10  }, label: '树兰国际医学院 & 医学院广场' },
+        // 体育馆 + 操场（含校门至体育馆路）
+        { pos: { x: 95,   y: 50,  z: -170 }, target: { x: 95,  y: 0,  z: -200 }, label: '体育馆 & 操场' },
+        // 东侧教学楼群（2-8号楼，经东侧连接路）
+        { pos: { x: 130,  y: 35,  z: -30  }, target: { x: 100, y: 5,  z: -40  }, label: '东侧教学楼群' },
+        // 行政中心
+        { pos: { x: 70,   y: 35,  z: 40   }, target: { x: 38,  y: 5,  z: 22   }, label: '行政中心' },
+        // 返回南门
+        { pos: { x: 0,    y: 55,  z: 155  }, target: { x: 0,   y: 0,  z: 125  }, label: '返回南门' },
     ];
 
+    const total = waypoints.length - 1;
     const DURATION = 3500;
 
     const tweens = waypoints.slice(1).map((wp, i) => {
@@ -57,7 +51,7 @@ export function startPatrolAnimation(camera, controls, TWEEN, onLabel, onDone) {
         }, DURATION)
         .easing(TWEEN.Easing.Sinusoidal.InOut)
         .onStart(() => {
-            if (onLabel) onLabel(wp.label);
+            if (onLabel) onLabel(`(${i + 1}/${total}) ${wp.label}`);
         })
         .onUpdate((obj) => {
             if (patrolStopped) return;
@@ -77,7 +71,7 @@ export function startPatrolAnimation(camera, controls, TWEEN, onLabel, onDone) {
 
     activeTween = tweens[0];
     tweens[0].start();
-    if (onLabel) onLabel(waypoints[1].label);
+    if (onLabel) onLabel(`(1/${total}) ${waypoints[1].label}`);
     return tweens[0];
 }
 
