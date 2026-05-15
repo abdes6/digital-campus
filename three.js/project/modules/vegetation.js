@@ -51,106 +51,178 @@ function createBush(x, z) {
     return group;
 }
 
+const BUILDING_ZONES = [
+    { x: -23, z: -63.5, w: 25, d: 20 },
+    { x: -59, z: -67, w: 30, d: 35 },
+    { x: -94, z: -80, w: 25, d: 15 },
+    { x: -45, z: -20, w: 25, d: 15 },
+    { x: -74, z: -3, w: 35, d: 30 },
+    { x: -74, z: 20, w: 35, d: 20 },
+    { x: -160, z: -87, w: 50, d: 30 },
+    { x: -90, z: 177, w: 35, d: 25 },
+    { x: 21.5, z: -60, w: 25, d: 25 },
+    { x: 46.5, z: -60, w: 30, d: 25 },
+    { x: 71.5, z: -47, w: 25, d: 25 },
+    { x: 93.5, z: -53, w: 30, d: 25 },
+    { x: 116.5, z: -30, w: 30, d: 40 },
+    { x: 48, z: -135, w: 30, d: 25 },
+    { x: 8, z: -142, w: 30, d: 40 },
+    { x: 135, z: -135, w: 30, d: 25 },
+    { x: 72, z: -265, w: 50, d: 40 },
+    { x: 120, z: -200, w: 60, d: 40 },
+    { x: 30.5, z: 90, w: 50, d: 60 },
+    { x: -30.5, z: 90, w: 50, d: 60 },
+];
+
+const ROAD_ZONES = [
+    { x: 0, z: 140, w: 14, d: 220 },
+    { x: -170, z: 0, w: 10, d: 300 },
+    { x: 140, z: 25, w: 20, d: 280 },
+    { x: 0, z: 121, w: 10, d: 24 },
+    { x: 0, z: 30, w: 10, d: 160 },
+    { x: 0, z: -59, w: 10, d: 106 },
+    { x: 20, z: 8, w: 8, d: 220 },
+    { x: -33, z: -38, w: 100, d: 6 },
+    { x: -78, z: -28, w: 86, d: 7 },
+    { x: -14.5, z: -100, w: 300, d: 30 },
+    { x: -120, z: -64, w: 72, d: 7 },
+    { x: 107, z: -55, w: 50, d: 7 },
+    { x: 105, z: -36, w: 64, d: 6 },
+    { x: 61.5, z: -110, w: 27, d: 7 },
+    { x: 75, z: -155, w: 90, d: 7 },
+    { x: 48, z: -185, w: 84, d: 7 },
+    { x: 23.5, z: -148, w: 49, d: 7 },
+    { x: -122, z: -89, w: 42, d: 7 },
+    { x: -148, z: -68, w: 54, d: 6 },
+    { x: -148, z: -110, w: 54, d: 6 },
+    { x: -78, z: 177, w: 30, d: 6 },
+    { x: -105, z: 177, w: 30, d: 6 },
+    { x: -90, z: 163, w: 32, d: 6 },
+    { x: -90, z: 192, w: 32, d: 6 },
+    { x: -45, z: 160, w: 90, d: 7 },
+    { x: 0, z: 146, w: 26, d: 7 },
+    { x: 56, z: -14, w: 97, d: 7 },
+];
+
+const EXCLUDE_ZONES = [
+    { x: 0, z: -20, w: 60, d: 40 },
+    { x: 75, z: -200, w: 80, d: 70 },
+    { x: 120, z: -200, w: 70, d: 50 },
+    { x: 0, z: -150, w: 400, d: 100 },
+    { x: 72, z: -235, w: 70, d: 30 },
+];
+
+function isOnZone(x, z, margin = 2) {
+    for (const b of BUILDING_ZONES) {
+        if (x >= b.x - b.w / 2 - margin && x <= b.x + b.w / 2 + margin &&
+            z >= b.z - b.d / 2 - margin && z <= b.z + b.d / 2 + margin) {
+            return true;
+        }
+    }
+    for (const r of ROAD_ZONES) {
+        if (x >= r.x - r.w / 2 - margin && x <= r.x + r.w / 2 + margin &&
+            z >= r.z - r.d / 2 - margin && z <= r.z + r.d / 2 + margin) {
+            return true;
+        }
+    }
+    for (const e of EXCLUDE_ZONES) {
+        if (x >= e.x - e.w / 2 && x <= e.x + e.w / 2 &&
+            z >= e.z - e.d / 2 && z <= e.z + e.d / 2) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function placeTreesAlongRect(zone, spacing, offset, trees) {
+    const halfW = zone.w / 2;
+    const halfD = zone.d / 2;
+    const countX = Math.floor(zone.w / spacing);
+    const countZ = Math.floor(zone.d / spacing);
+
+    for (let i = 0; i <= countX; i++) {
+        const x = zone.x - halfW + i * spacing;
+        if (!isOnZone(x, zone.z - halfD - offset)) {
+            trees.push(createTree(x, zone.z - halfD - offset, 5));
+        }
+        if (!isOnZone(x, zone.z + halfD + offset)) {
+            trees.push(createTree(x, zone.z + halfD + offset, 5));
+        }
+    }
+    for (let i = 1; i < countZ; i++) {
+        const z = zone.z - halfD + i * spacing;
+        if (!isOnZone(zone.x - halfW - offset, z)) {
+            trees.push(createTree(zone.x - halfW - offset, z, 5));
+        }
+        if (!isOnZone(zone.x + halfW + offset, z)) {
+            trees.push(createTree(zone.x + halfW + offset, z, 5));
+        }
+    }
+}
+
+function placeTreesAlongRoad(zone, spacing, offset, trees) {
+    const isHorizontal = zone.d > zone.w;
+    const halfW = zone.w / 2;
+    const halfD = zone.d / 2;
+
+    if (isHorizontal) {
+        const count = Math.floor(zone.d / spacing);
+        for (let i = 0; i <= count; i++) {
+            const z = zone.z - halfD + i * spacing;
+            if (!isOnZone(zone.x - halfW - offset, z)) {
+                trees.push(createTree(zone.x - halfW - offset, z, 4));
+            }
+            if (!isOnZone(zone.x + halfW + offset, z)) {
+                trees.push(createTree(zone.x + halfW + offset, z, 4));
+            }
+        }
+    } else {
+        const count = Math.floor(zone.w / spacing);
+        for (let i = 0; i <= count; i++) {
+            const x = zone.x - halfW + i * spacing;
+            if (!isOnZone(x, zone.z - halfD - offset)) {
+                trees.push(createTree(x, zone.z - halfD - offset, 4));
+            }
+            if (!isOnZone(x, zone.z + halfD + offset)) {
+                trees.push(createTree(x, zone.z + halfD + offset, 4));
+            }
+        }
+    }
+}
+
 export function createVegetation(scene) {
-    const items = [];
+    const trees = [];
 
-    // 树人街（南侧）行道树 — z=150行与道路(z=133~147)冲突，只保留z=128
-    for (let i = -10; i <= 10; i++) {
-        items.push(createTree(i * 11, 128, 5));
+    for (const b of BUILDING_ZONES) {
+        placeTreesAlongRect(b, 8, 6, trees);
     }
 
-    // 校内南北主干道两侧行道树 — 跳过南门广场(z=110,120)及教学区广场(z=86)范围
-    for (let z = 50; z <= 120; z += 12) {
-        if (z === 86 || z === 110 || z === 120) continue;
-        items.push(createTree(-7, z, 6));
-        items.push(createTree(7, z, 6));
+    for (const r of ROAD_ZONES) {
+        placeTreesAlongRoad(r, 10, 5, trees);
     }
 
-    // 中心绿轴区域散树 — 移除与道路(z=-9~-1)及(z=-115~-85)冲突的点
-    const greenAxisTrees = [
-        [-25, -10, 7], [25, -10, 7],
-        [-20, -30, 6], [20, -30, 6],
-        // [-10, -45, 8], [10, -45, 8],  // 与横路(z=-115~-85)冲突
-        // [0, -50, 7],                   // 同上
-        [30, -5, 6],
+    const campusEdge = [
+        { x: -180, z: -160, count: 8 },
+        { x: -180, z: 160, count: 8 },
+        { x: 180, z: -160, count: 8 },
+        { x: 180, z: 160, count: 8 },
     ];
-    for (const [x, z, h] of greenAxisTrees) {
-        items.push(createTree(x, z, h));
-    }
-
-    // 东西环路北侧行道树 — z=-45行与大横路(z=-115~-85)无冲突，但z=-35与道路(z=-9~-1)安全
-    // 仅保留不与道路重叠的范围：跳过x=-5~5附近（主干道占用）
-    for (let x = -95; x <= 95; x += 14) {
-        if (Math.abs(x) < 8) continue; // 主干道占用
-        items.push(createTree(x, -35, 6));
-    }
-
-    // 西侧湖州街行道树 — 裁剪掉与清乐园横路冲突区段(z=-113~-65)及科研区西纵路(z=-100~-28)
-    for (let z = -140; z <= 140; z += 12) {
-        if (z >= -116 && z <= -62) continue;
-        items.push(createTree(-108, z, 6));
-        if (z < -100 || z > -28) {
-            items.push(createTree(-122, z, 6));
+    for (const e of campusEdge) {
+        for (let i = 0; i < e.count; i++) {
+            const z1 = -160 + i * 40;
+            if (!isOnZone(e.x, z1)) {
+                trees.push(createTree(e.x, z1, 6));
+            }
+            const z2 = 160 - i * 40;
+            if (!isOnZone(e.x, z2)) {
+                trees.push(createTree(e.x, z2, 6));
+            }
         }
     }
 
-    // 东侧日积街行道树 — 裁剪掉与东侧横路冲突区段(z=-68~-4)
-    // for (let z = -140; z <= 140; z += 12) {
-    //     if (z >= -71 && z <= -1) continue;
-    //     items.push(createTree(108, z, 6));
-    //     items.push(createTree(122, z, 6));
-    // }
-
-
-    // 操场周围灌木 — 半径需大于操场外径28，留2单位间距
-    for (let a = 0; a < Math.PI * 2; a += 0.5) {
-        const bx = 120 + Math.cos(a) * 35;
-        const bz = -200 + Math.sin(a) * 35;
-        items.push(createBush(bx, bz));
+    for (const t of trees) {
+        scene.add(t);
     }
 
-    // 宿舍区（西北清乐园）周围灌木 — 移除与道路冲突的点
-    const dormBushes = [
-        // [-98, -45], [-98, -60], [-98, -75], [-98, -90], [-98, -105], // 与道路冲突
-        // [-80, -115], [-70, -115], // 与科研区南横路(z=-115~-85)冲突
-    ];
-    for (const [x, z] of dormBushes) {
-        items.push(createBush(x, z));
-    }
-
-    // 西南宿舍区（致和园）周围灌木
-    const zhyBushes = [
-        [-98, 30], [-98, 45], [-98, 60], [-98, 75],
-        [-78, 78], [-78, 28],
-    ];
-    for (const [x, z] of zhyBushes) {
-        items.push(createBush(x, z));
-    }
-
-    // 教学楼前广场两侧灌木 — 移出教学楼范围(±30.5±40, z=90±25 → x:-70~70, z:65~115)
-    const teachBushes = [
-        [-72, 75], [-72, 95], [-72, 110],
-        [72, 75], [72, 95], [72, 110],
-    ];
-    for (const [x, z] of teachBushes) {
-        items.push(createBush(x, z));
-    }
-
-    // 北部科研区散树 — 移除与大横路(z=-115~-85)冲突的点，其余安全
-    const northTrees = [
-        [-40, -70, 7],
-        // [-40, -100, 6], // 与横路冲突
-        [30, -70, 7],
-        // [30, -100, 6],  // 与横路冲突
-        [0, -75, 8],
-        // [0, -110, 7],   // 与横路冲突
-    ];
-    for (const [x, z, h] of northTrees) {
-        items.push(createTree(x, z, h));
-    }
-
-    for (const item of items) {
-        scene.add(item);
-    }
-    return items;
+    return trees;
 }

@@ -20,6 +20,20 @@
         <button class="hud-btn view-btn" data-view="birdseye">鸟瞰视角</button>
         <button class="hud-btn view-btn" data-view="front">正面视角</button>
         <button class="hud-btn" id="btn-patrol">场景巡游</button>
+        <button class="hud-btn active" id="btn-labels">建筑标签</button>
+    </div>
+
+    <!-- 巡游速度控制 -->
+    <div id="patrol-speed-control">
+        <label>巡游速度：</label>
+        <input type="range" id="patrol-speed" min="0.5" max="2" step="0.1" value="1" />
+        <span id="speed-value">1.0x</span>
+    </div>
+
+    <!-- 搜索栏 -->
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="🔍 搜索建筑..." />
+        <div id="search-results"></div>
     </div>
 
     <!-- 图层控制 -->

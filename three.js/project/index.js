@@ -1,13 +1,14 @@
 import * as THREE from 'three';
 import TWEEN from '@tweenjs/tween.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { initScene } from './modules/scene.js';
 import { initCamera, switchView } from './modules/camera.js';
 import { initControls } from './modules/controls.js';
 import { createBuildings } from './modules/buildings.js';
 import { createRoads } from './modules/roads.js';
 import { createVegetation } from './modules/vegetation.js';
-import { startPatrolAnimation, stopPatrolAnimation, pulseObject } from './modules/animation.js';
+import { startPatrolAnimation, stopPatrolAnimation, pulseObject, setPatrolSpeed } from './modules/animation.js';
 import { showInfo, hidePanel } from './modules/infoPanel.js';
 
 // ── 初始化 ──────────────────────────────────────────────
@@ -21,12 +22,183 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.insertBefore(renderer.domElement, document.body.firstChild);
 
+// CSS2D 标签渲染器
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(window.innerWidth, window.innerHeight);
+labelRenderer.domElement.style.position = 'absolute';
+labelRenderer.domElement.style.top = '0px';
+labelRenderer.domElement.style.left = '0px';
+labelRenderer.domElement.style.pointerEvents = 'none';
+labelRenderer.domElement.style.zIndex = '1';
+document.body.appendChild(labelRenderer.domElement);
+
 const controls = initControls(camera, renderer.domElement);
 
 // ── 场景对象 ────────────────────────────────────────────
 const buildings = await createBuildings(scene);
 const roads = createRoads(scene);
 const vegetation = createVegetation(scene);
+
+// ── CSS2D 建筑标签 ──────────────────────────────────────
+const buildingLabels = [];
+let labelsVisible = true;
+
+function createBuildingLabel(building) {
+    const name = building.userData.name;
+    if (!name) return null;
+    
+    // 获取建筑的边界框和世界坐标
+    const box = new THREE.Box3().setFromObject(building);
+    const worldPos = new THREE.Vector3();
+    building.getWorldPosition(worldPos);
+    
+    // 标签放在建筑上方
+    const labelX = worldPos.x;
+    const labelY = box.max.y + 5;
+    const labelZ = worldPos.z;
+    
+    const div = document.createElement('div');
+    div.textContent = name;
+    div.className = 'building-label';
+    const label = new CSS2DObject(div);
+    label.position.set(labelX, labelY, labelZ);
+    label.visible = true;
+    
+    // 直接添加到场景
+    scene.add(label);
+    return label;
+}
+
+for (const b of buildings) {
+    const label = createBuildingLabel(b);
+    if (label) buildingLabels.push(label);
+}
+
+// 标签显隐切换
+document.getElementById('btn-labels').addEventListener('click', () => {
+    labelsVisible = !labelsVisible;
+    buildingLabels.forEach(l => { l.visible = labelsVisible; });
+    document.getElementById('btn-labels').classList.toggle('active');
+});
+
+// ── 建筑搜索与飞行定位 ──────────────────────────────────
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+
+const buildingIndex = buildings
+    .map(b => ({ name: b.userData.name || '', object: b }))
+    .filter(item => item.name);
+
+searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim();
+    if (!query) { searchResults.style.display = 'none'; return; }
+    const matches = buildingIndex.filter(item =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+    );
+    if (!matches.length) { searchResults.style.display = 'none'; return; }
+    searchResults.innerHTML = matches.map(item =>
+        `<div class="search-result-item" data-name="${item.name}">${item.name}</div>`
+    ).join('');
+    searchResults.style.display = 'block';
+});
+
+searchResults.addEventListener('click', (e) => {
+    const item = e.target.closest('.search-result-item');
+    if (!item) return;
+    const name = item.dataset.name;
+    const entry = buildingIndex.find(b => b.name === name);
+    if (entry) flyTo(entry.object);
+    searchInput.value = name;
+    searchResults.style.display = 'none';
+});
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#search-container')) {
+        searchResults.style.display = 'none';
+    }
+});
+
+let flyTween = null;
+
+function flyTo(obj) {
+    if (patrolActive) { btnPatrol.click(); }
+    if (flyTween) { flyTween.stop(); flyTween = null; }
+
+    const worldPos = new THREE.Vector3();
+    obj.getWorldPosition(worldPos);
+    const dist = Math.max(30, Math.sqrt(
+        obj.userData.info?.['建筑面积'] ? 30 : 20
+    ));
+    const angle = Math.PI / 4;
+    const targetPos = worldPos.clone().add(new THREE.Vector3(
+        dist * Math.cos(angle), dist * 0.6 + 10, dist * Math.sin(angle)
+    ));
+    const targetLook = worldPos.clone();
+    targetLook.y += 3;
+
+    const startPos = camera.position.clone();
+    const startTarget = controls.target.clone();
+
+    flyTween = new TWEEN.Tween({
+        x: startPos.x, y: startPos.y, z: startPos.z,
+        tx: startTarget.x, ty: startTarget.y, tz: startTarget.z
+    })
+    .to({
+        x: targetPos.x, y: targetPos.y, z: targetPos.z,
+        tx: targetLook.x, ty: targetLook.y, tz: targetLook.z
+    }, 1200)
+    .easing(TWEEN.Easing.Quadratic.InOut)
+    .onUpdate((s) => {
+        camera.position.set(s.x, s.y, s.z);
+        controls.target.set(s.tx, s.ty, s.tz);
+        controls.update();
+    })
+    .onComplete(() => { flyTween = null; })
+    .start();
+
+    highlightObject(obj);
+}
+
+// ── 点击高亮效果 ────────────────────────────────────────
+let highlightedObj = null;
+
+function highlightObject(obj) {
+    if (highlightedObj && highlightedObj !== obj) {
+        resetHighlight(highlightedObj);
+    }
+    highlightedObj = obj;
+    
+    obj.traverse(child => {
+        if (child.isMesh && child.material) {
+            const mats = Array.isArray(child.material) ? child.material : [child.material];
+            mats.forEach(m => {
+                if (m && m.emissive) {
+                    if (!m._origEmissiveSet) {
+                        m._origEmissive = m.emissive.getHex();
+                        m._origEmissiveSet = true;
+                    }
+                    m.emissive.setHex(0x4488ff);
+                    m.emissiveIntensity = 0.35;
+                }
+            });
+        }
+    });
+}
+
+function resetHighlight(obj) {
+    obj.traverse(child => {
+        if (child.isMesh && child.material) {
+            const mats = Array.isArray(child.material) ? child.material : [child.material];
+            mats.forEach(m => {
+                if (m && m._origEmissive !== undefined && m.emissive) {
+                    m.emissive.setHex(m._origEmissive);
+                    m.emissiveIntensity = 0;
+                }
+            });
+        }
+    });
+    highlightedObj = null;
+}
 
 // 所有可点击对象（展平 group 子网格）
 const clickables = [];
@@ -38,7 +210,7 @@ const clickables = [];
 
 // ── 图层控制 ────────────────────────────────────────────
 const layers = {
-    buildings: { objects: buildings, visible: true },
+    buildings: { objects: buildings, labels: buildingLabels, visible: true },
     roads:     { objects: roads,     visible: true },
     vegetation:{ objects: vegetation,visible: true }
 };
@@ -49,6 +221,10 @@ document.querySelectorAll('.layer-item input').forEach(cb => {
         if (!layer) return;
         layer.visible = cb.checked;
         layer.objects.forEach(o => { o.visible = cb.checked; });
+        // 同时控制标签显示
+        if (layer.labels) {
+            layer.labels.forEach(l => { l.visible = cb.checked && labelsVisible; });
+        }
     });
 });
 
@@ -93,6 +269,17 @@ btnPatrol.addEventListener('click', () => {
         tooltip.textContent = defaultTooltip;
     }
 });
+
+// 巡游速度控制
+const speedSlider = document.getElementById('patrol-speed');
+const speedValue = document.getElementById('speed-value');
+if (speedSlider && speedValue) {
+    speedSlider.addEventListener('input', () => {
+        const speed = parseFloat(speedSlider.value);
+        speedValue.textContent = speed.toFixed(1) + 'x';
+        setPatrolSpeed(speed);
+    });
+}
 
 // ── 位置调整 GUI ────────────────────────────────────────
 const gui = new GUI({ title: '对象位置调整', width: 260 });
@@ -171,11 +358,17 @@ lengthCtrl = gui.add(guiState, '长度', 1, 400, 1).name('长度（道路）').o
 gui.add(guiState, '打印坐标').name('📋 打印当前坐标到控制台');
 
 function selectObject(obj) {
-    let root = obj;
-    while (root.parent && root.parent !== scene) {
-        root = root.parent;
+    // 尝试找到最顶层的建筑或道路组
+    let current = obj;
+    let building = null;
+    
+    while (current) {
+        // 如果当前对象在 buildings 或 roads 数组中，直接返回
+        if (buildings.includes(current) || roads.includes(current)) {
+            return current;
+        }
+        current = current.parent;
     }
-    if (buildings.includes(root) || roads.includes(root)) return root;
     return null;
 }
 
@@ -195,7 +388,15 @@ renderer.domElement.addEventListener('click', (e) => {
         const root = selectObject(obj);
 
         if (root) {
+            // 如果点击的是同一个建筑，取消高亮
+            if (selectedBuilding === root && highlightedObj === root) {
+                resetHighlight(root);
+                selectedBuilding = null;
+                hidePanel();
+                return;
+            }
             selectedBuilding = root;
+            highlightObject(root);
             const name = root.userData.name || root.name || '道路';
             guiState['对象'] = name;
             guiState.X = parseFloat(root.position.x.toFixed(1));
@@ -231,6 +432,12 @@ renderer.domElement.addEventListener('click', (e) => {
             hidePanel();
         }
     } else {
+        // 点击空白处取消高亮
+        if (highlightedObj) {
+            resetHighlight(highlightedObj);
+            highlightedObj = null;
+        }
+        selectedBuilding = null;
         hidePanel();
     }
 });
@@ -240,6 +447,7 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
 });
 
 // ── 隐藏加载遮罩 ────────────────────────────────────────
@@ -251,5 +459,6 @@ function animate() {
     TWEEN.update();
     controls.update();
     renderer.render(scene, camera);
+    labelRenderer.render(scene, camera);
 }
 animate();
