@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import TWEEN from '@tweenjs/tween.js';
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+// import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { initScene } from './modules/scene.js';
 import { initCamera, switchView } from './modules/camera.js';
@@ -118,44 +118,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-let flyTween = null;
-
 function flyTo(obj) {
-    if (patrolActive) { btnPatrol.click(); }
-    if (flyTween) { flyTween.stop(); flyTween = null; }
-
-    const worldPos = new THREE.Vector3();
-    obj.getWorldPosition(worldPos);
-    const dist = Math.max(30, Math.sqrt(
-        obj.userData.info?.['建筑面积'] ? 30 : 20
-    ));
-    const angle = Math.PI / 4;
-    const targetPos = worldPos.clone().add(new THREE.Vector3(
-        dist * Math.cos(angle), dist * 0.6 + 10, dist * Math.sin(angle)
-    ));
-    const targetLook = worldPos.clone();
-    targetLook.y += 3;
-
-    const startPos = camera.position.clone();
-    const startTarget = controls.target.clone();
-
-    flyTween = new TWEEN.Tween({
-        x: startPos.x, y: startPos.y, z: startPos.z,
-        tx: startTarget.x, ty: startTarget.y, tz: startTarget.z
-    })
-    .to({
-        x: targetPos.x, y: targetPos.y, z: targetPos.z,
-        tx: targetLook.x, ty: targetLook.y, tz: targetLook.z
-    }, 1200)
-    .easing(TWEEN.Easing.Quadratic.InOut)
-    .onUpdate((s) => {
-        camera.position.set(s.x, s.y, s.z);
-        controls.target.set(s.tx, s.ty, s.tz);
-        controls.update();
-    })
-    .onComplete(() => { flyTween = null; })
-    .start();
-
     highlightObject(obj);
 }
 
@@ -282,88 +245,83 @@ if (speedSlider && speedValue) {
 }
 
 // ── 位置调整 GUI ────────────────────────────────────────
-const gui = new GUI({ title: '对象位置调整', width: 260 });
-gui.domElement.style.position = 'fixed';
-gui.domElement.style.right = '10px';
-gui.domElement.style.top = '60px';
-gui.close();
+// const gui = new GUI({ title: '对象位置调整', width: 260 });
+// gui.domElement.style.position = 'fixed';
+// gui.domElement.style.right = '10px';
+// gui.domElement.style.top = '60px';
+// gui.close();
 
-const guiState = {
-    对象: '（点击对象选择）',
-    X: 0,
-    Y: 0,
-    Z: 0,
-    旋转Y: 0,
-    缩放: 1,
-    缩放X: 1,
-    缩放Y: 1,
-    缩放Z: 1,
-    宽度: 1,
-    长度: 1,
-    打印坐标: () => {
-        if (selectedBuilding) {
-            const p = selectedBuilding.position;
-            const ry = THREE.MathUtils.radToDeg(selectedBuilding.rotation.y);
-            const s = selectedBuilding.scale;
-            console.log(`[位置] ${selectedBuilding.name || selectedBuilding.userData.name}: [${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}] 旋转Y: ${ry.toFixed(1)}° 缩放: ${s.x.toFixed(2)}/${s.y.toFixed(2)}/${s.z.toFixed(2)}`);
-        }
-    }
-};
+// const guiState = {
+//     对象: '（点击对象选择）',
+//     X: 0,
+//     Y: 0,
+//     Z: 0,
+//     旋转Y: 0,
+//     缩放: 1,
+//     缩放X: 1,
+//     缩放Y: 1,
+//     缩放Z: 1,
+//     宽度: 1,
+//     长度: 1,
+//     打印坐标: () => {
+//         if (selectedBuilding) {
+//             const p = selectedBuilding.position;
+//             const ry = THREE.MathUtils.radToDeg(selectedBuilding.rotation.y);
+//             const s = selectedBuilding.scale;
+//             console.log(`[位置] ${selectedBuilding.name || selectedBuilding.userData.name}: [${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}] 旋转Y: ${ry.toFixed(1)}° 缩放: ${s.x.toFixed(2)}/${s.y.toFixed(2)}/${s.z.toFixed(2)}`);
+//         }
+//     }
+// };
 
-let selectedBuilding = null;
-let xCtrl, yCtrl, zCtrl, ryCtrl, scaleCtrl, scaleXCtrl, scaleYCtrl, scaleZCtrl, nameCtrl, widthCtrl, lengthCtrl;
+// let selectedBuilding = null;
+// let xCtrl, yCtrl, zCtrl, ryCtrl, scaleCtrl, scaleXCtrl, scaleYCtrl, scaleZCtrl, nameCtrl, widthCtrl, lengthCtrl;
 
-nameCtrl = gui.add(guiState, '对象').name('当前对象').listen();
-xCtrl = gui.add(guiState, 'X', -200, 200, 0.5).name('X 位置').onChange(v => {
-    if (selectedBuilding) selectedBuilding.position.x = v;
-});
-yCtrl = gui.add(guiState, 'Y', -10, 50, 0.5).name('Y 位置').onChange(v => {
-    if (selectedBuilding) selectedBuilding.position.y = v;
-});
-zCtrl = gui.add(guiState, 'Z', -200, 200, 0.5).name('Z 位置').onChange(v => {
-    if (selectedBuilding) selectedBuilding.position.z = v;
-});
-ryCtrl = gui.add(guiState, '旋转Y', -180, 180, 1).name('旋转 Y (°)').onChange(v => {
-    if (selectedBuilding) selectedBuilding.rotation.y = THREE.MathUtils.degToRad(v);
-});
-scaleCtrl = gui.add(guiState, '缩放', 0.1, 5, 0.05).name('整体缩放').onChange(v => {
-    if (selectedBuilding) {
-        selectedBuilding.scale.set(v * guiState['缩放X'], v * guiState['缩放Y'], v * guiState['缩放Z']);
-    }
-});
-scaleXCtrl = gui.add(guiState, '缩放X', 0.1, 5, 0.05).name('X 轴缩放').onChange(v => {
-    if (selectedBuilding) selectedBuilding.scale.x = guiState['缩放'] * v;
-});
-scaleYCtrl = gui.add(guiState, '缩放Y', 0.1, 5, 0.05).name('Y 轴缩放').onChange(v => {
-    if (selectedBuilding) selectedBuilding.scale.y = guiState['缩放'] * v;
-});
-scaleZCtrl = gui.add(guiState, '缩放Z', 0.1, 5, 0.05).name('Z 轴缩放').onChange(v => {
-    if (selectedBuilding) selectedBuilding.scale.z = guiState['缩放'] * v;
-});
-widthCtrl = gui.add(guiState, '宽度', 0.5, 30, 0.5).name('宽度（道路）').onChange(v => {
-    if (selectedBuilding && selectedBuilding.userData.type === 'road') {
-        // 道路宽度对应 X 轴缩放（rotY=0时）或 Z 轴缩放（rotY=90°时）
-        const ry = Math.abs(selectedBuilding.rotation.y % Math.PI);
-        if (ry < 0.1) selectedBuilding.scale.x = v;
-        else selectedBuilding.scale.z = v;
-    }
-});
-lengthCtrl = gui.add(guiState, '长度', 1, 400, 1).name('长度（道路）').onChange(v => {
-    if (selectedBuilding && selectedBuilding.userData.type === 'road') {
-        const ry = Math.abs(selectedBuilding.rotation.y % Math.PI);
-        if (ry < 0.1) selectedBuilding.scale.z = v;
-        else selectedBuilding.scale.x = v;
-    }
-});
-gui.add(guiState, '打印坐标').name('📋 打印当前坐标到控制台');
+// nameCtrl = gui.add(guiState, '对象').name('当前对象').listen();
+// xCtrl = gui.add(guiState, 'X', -200, 200, 0.5).name('X 位置').onChange(v => {
+//     if (selectedBuilding) selectedBuilding.position.x = v;
+// });
+// yCtrl = gui.add(guiState, 'Y', -10, 50, 0.5).name('Y 位置').onChange(v => {
+//     if (selectedBuilding) selectedBuilding.position.y = v;
+// });
+// zCtrl = gui.add(guiState, 'Z', -200, 200, 0.5).name('Z 位置').onChange(v => {
+//     if (selectedBuilding) selectedBuilding.position.z = v;
+// });
+// ryCtrl = gui.add(guiState, '旋转Y', -180, 180, 1).name('旋转 Y (°)').onChange(v => {
+//     if (selectedBuilding) selectedBuilding.rotation.y = THREE.MathUtils.degToRad(v);
+// });
+// scaleCtrl = gui.add(guiState, '缩放', 0.1, 5, 0.05).name('整体缩放').onChange(v => {
+//     if (selectedBuilding) {
+//         selectedBuilding.scale.set(v * guiState['缩放X'], v * guiState['缩放Y'], v * guiState['缩放Z']);
+//     }
+// });
+// scaleXCtrl = gui.add(guiState, '缩放X', 0.1, 5, 0.05).name('X 轴缩放').onChange(v => {
+//     if (selectedBuilding) selectedBuilding.scale.x = guiState['缩放'] * v;
+// });
+// scaleYCtrl = gui.add(guiState, '缩放Y', 0.1, 5, 0.05).name('Y 轴缩放').onChange(v => {
+//     if (selectedBuilding) selectedBuilding.scale.y = guiState['缩放'] * v;
+// });
+// scaleZCtrl = gui.add(guiState, '缩放Z', 0.1, 5, 0.05).name('Z 轴缩放').onChange(v => {
+//     if (selectedBuilding) selectedBuilding.scale.z = guiState['缩放'] * v;
+// });
+// widthCtrl = gui.add(guiState, '宽度', 0.5, 30, 0.5).name('宽度（道路）').onChange(v => {
+//     if (selectedBuilding && selectedBuilding.userData.type === 'road') {
+//         const ry = Math.abs(selectedBuilding.rotation.y % Math.PI);
+//         if (ry < 0.1) selectedBuilding.scale.x = v;
+//         else selectedBuilding.scale.z = v;
+//     }
+// });
+// lengthCtrl = gui.add(guiState, '长度', 1, 400, 1).name('长度（道路）').onChange(v => {
+//     if (selectedBuilding && selectedBuilding.userData.type === 'road') {
+//         const ry = Math.abs(selectedBuilding.rotation.y % Math.PI);
+//         if (ry < 0.1) selectedBuilding.scale.z = v;
+//         else selectedBuilding.scale.x = v;
+//     }
+// });
+// gui.add(guiState, '打印坐标').name('📋 打印当前坐标到控制台');
 
 function selectObject(obj) {
-    // 尝试找到最顶层的建筑或道路组
     let current = obj;
-    let building = null;
-    
     while (current) {
-        // 如果当前对象在 buildings 或 roads 数组中，直接返回
         if (buildings.includes(current) || roads.includes(current)) {
             return current;
         }
@@ -388,39 +346,43 @@ renderer.domElement.addEventListener('click', (e) => {
         const root = selectObject(obj);
 
         if (root) {
-            // 如果点击的是同一个建筑，取消高亮
-            if (selectedBuilding === root && highlightedObj === root) {
+            // if (selectedBuilding === root && highlightedObj === root) {
+            //     resetHighlight(root);
+            //     selectedBuilding = null;
+            //     hidePanel();
+            //     return;
+            // }
+            // selectedBuilding = root;
+            if (highlightedObj === root) {
                 resetHighlight(root);
-                selectedBuilding = null;
+                highlightedObj = null;
                 hidePanel();
                 return;
             }
-            selectedBuilding = root;
             highlightObject(root);
-            const name = root.userData.name || root.name || '道路';
-            guiState['对象'] = name;
-            guiState.X = parseFloat(root.position.x.toFixed(1));
-            guiState.Y = parseFloat(root.position.y.toFixed(1));
-            guiState.Z = parseFloat(root.position.z.toFixed(1));
-            guiState['旋转Y'] = parseFloat(THREE.MathUtils.radToDeg(root.rotation.y).toFixed(1));
-            guiState['缩放'] = parseFloat(root.scale.y.toFixed(2));
-            guiState['缩放X'] = parseFloat((root.scale.x / Math.max(root.scale.y, 0.001)).toFixed(2));
-            guiState['缩放Y'] = 1;
-            guiState['缩放Z'] = parseFloat((root.scale.z / Math.max(root.scale.y, 0.001)).toFixed(2));
-            // 道路宽/长：scale 默认1对应几何体原始尺寸，直接读 scale
-            guiState['宽度'] = parseFloat(root.scale.x.toFixed(1));
-            guiState['长度'] = parseFloat(root.scale.z.toFixed(1));
-            xCtrl.updateDisplay();
-            yCtrl.updateDisplay();
-            zCtrl.updateDisplay();
-            ryCtrl.updateDisplay();
-            scaleCtrl.updateDisplay();
-            scaleXCtrl.updateDisplay();
-            scaleYCtrl.updateDisplay();
-            scaleZCtrl.updateDisplay();
-            widthCtrl.updateDisplay();
-            lengthCtrl.updateDisplay();
-            gui.open();
+            // const name = root.userData.name || root.name || '道路';
+            // guiState['对象'] = name;
+            // guiState.X = parseFloat(root.position.x.toFixed(1));
+            // guiState.Y = parseFloat(root.position.y.toFixed(1));
+            // guiState.Z = parseFloat(root.position.z.toFixed(1));
+            // guiState['旋转Y'] = parseFloat(THREE.MathUtils.radToDeg(root.rotation.y).toFixed(1));
+            // guiState['缩放'] = parseFloat(root.scale.y.toFixed(2));
+            // guiState['缩放X'] = parseFloat((root.scale.x / Math.max(root.scale.y, 0.001)).toFixed(2));
+            // guiState['缩放Y'] = 1;
+            // guiState['缩放Z'] = parseFloat((root.scale.z / Math.max(root.scale.y, 0.001)).toFixed(2));
+            // guiState['宽度'] = parseFloat(root.scale.x.toFixed(1));
+            // guiState['长度'] = parseFloat(root.scale.z.toFixed(1));
+            // xCtrl.updateDisplay();
+            // yCtrl.updateDisplay();
+            // zCtrl.updateDisplay();
+            // ryCtrl.updateDisplay();
+            // scaleCtrl.updateDisplay();
+            // scaleXCtrl.updateDisplay();
+            // scaleYCtrl.updateDisplay();
+            // scaleZCtrl.updateDisplay();
+            // widthCtrl.updateDisplay();
+            // lengthCtrl.updateDisplay();
+            // gui.open();
         }
 
         if (obj.userData && obj.userData.name) {
@@ -437,7 +399,7 @@ renderer.domElement.addEventListener('click', (e) => {
             resetHighlight(highlightedObj);
             highlightedObj = null;
         }
-        selectedBuilding = null;
+        // selectedBuilding = null;
         hidePanel();
     }
 });
